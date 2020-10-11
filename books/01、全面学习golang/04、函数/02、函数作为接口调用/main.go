@@ -26,4 +26,10 @@ func main() {
 	invoker = s
 
 	invoker.call("hello")
+
+	invoker = FuncCaller(func(value interface{}) {
+		fmt.Println("form function: ", value)
+	})
+
+	invoker.call("hello")
 }
