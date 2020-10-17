@@ -6,6 +6,8 @@ import (
 )
 
 /*
+channel(信道)
+
 上面代码，我们用 for-range 来读取 channel的数据，for-range 是一个很有特色的语句，有以下特点：
 
 - 如果 channel 已经被关闭，它还是会继续执行，直到所有值被取完，然后退出执行。
