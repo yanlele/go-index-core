@@ -6,11 +6,7 @@ import (
 )
 
 func main() {
-	// 加载配置
-	err := config.Load("config/config.yaml")
-	if err != nil {
-		fmt.Println("Failed to load configuration")
-		return
-	}
-
+	conf := config.Get()
+	// 答应地址
+	fmt.Println("conf.DSN", conf.DSN)
 }
