@@ -12,8 +12,12 @@ type AdminUser struct {
 	common.Common
 }
 
-func (admin *AdminUser) Index(context *gin.Context) {
+func (admin *AdminUser) QueryAllUser(context *gin.Context) {
 	var users []models.AdminUser
-	database.DB.Select("id, name, username, create_at, update_at").Order("id").Find(&users)
+	queryResult := database.DB.Select("id, name, username, created_at, updated_at").Order("id").Find(&users)
+	if queryResult.Error != nil {
+		admin.JsonFail(context, http.StatusOK, "查询失败")
+		return
+	}
 	admin.JsonSuccess(context, http.StatusOK, gin.H{"data": users})
 }

@@ -10,7 +10,7 @@ func InitRouter() *gin.Engine {
 	api := router.Group("/api")
 	{
 		adminUser := &controller.AdminUser{}
-		api.GET("/admin_users", adminUser.Index)
+		api.GET("/admin_users", adminUser.QueryAllUser)
 	}
 
 	return router

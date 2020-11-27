@@ -2,6 +2,7 @@ package database
 
 import (
 	"go-gorm-example/config"
+	"go-gorm-example/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -22,6 +23,12 @@ func init() {
 
 	if err != nil {
 		log.Panicln("链接错误")
+	} else {
+		err := DB.AutoMigrate(&models.AdminUser{})
+		if err != nil {
+			log.Println("创建表失败")
+		}
+		log.Println("链接成功")
 	}
-	log.Println("链接成功")
+
 }
