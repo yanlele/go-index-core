@@ -2,14 +2,14 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-gorm-example/controller/common"
+	"go-gorm-example/common/response"
 	"go-gorm-example/database"
 	"go-gorm-example/models"
 	"net/http"
 )
 
 type AdminUser struct {
-	common.Common
+	response.CommonResponse
 }
 
 func (admin *AdminUser) QueryAllUser(context *gin.Context) {
@@ -20,4 +20,8 @@ func (admin *AdminUser) QueryAllUser(context *gin.Context) {
 		return
 	}
 	admin.JsonSuccess(context, http.StatusOK, gin.H{"data": users})
+}
+
+func (admin *AdminUser) Store(context *gin.Context) {
+
 }
