@@ -55,8 +55,28 @@ func (admin *AdminUser) Store(context *gin.Context) {
 			admin.JsonFail(context, http.StatusBadRequest, err.Error())
 			return
 		}
-		admin.JsonSuccess(context, http.StatusOK, gin.H{"message": "创建成功"})
+		admin.JsonSuccess(context, http.StatusCreated, gin.H{"message": "创建成功"})
 	} else {
 		admin.JsonFail(context, http.StatusBadRequest, err.Error())
 	}
+}
+
+func (admin *AdminUser) Update(context *gin.Context) {
+	var request UpdateRequest
+	err := context.ShouldBind(&request)
+	if err == nil {
+		var user models.AdminUser
+		if database.DB.First(&user, context.Param("id")).Error != nil {
+			admin.JsonFail(context, http.StatusNotFound, "数据不存在")
+			return
+		}
+		user.Name = request.Name
+		if err := database.DB.Save(&user).Error; err != nil {
+			admin.JsonFail(context, http.StatusBadRequest, err.Error())
+			return
+		}
+		admin.JsonSuccess(context, http.StatusOK, gin.H{})
+		return
+	}
+	admin.JsonFail(context, http.StatusBadRequest, err.Error())
 }

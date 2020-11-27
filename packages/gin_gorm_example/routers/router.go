@@ -11,7 +11,8 @@ func InitRouter() *gin.Engine {
 	{
 		adminUser := &controller.AdminUser{}
 		api.GET("/admin_users", adminUser.QueryAllUser)
-		api.POST("/admin_users", adminUser.Store)
+		api.POST("/admin_user", adminUser.Store)
+		api.PATCH("/admin_user/:id", adminUser.Update)
 	}
 
 	return router
