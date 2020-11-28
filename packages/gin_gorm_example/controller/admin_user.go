@@ -97,3 +97,12 @@ func (admin *AdminUser) Destroy(context *gin.Context) {
 
 	admin.JsonSuccess(context, http.StatusCreated, gin.H{})
 }
+
+func (admin *AdminUser) FindOneUser(context *gin.Context) {
+	var user models.AdminUser
+	if database.DB.Select("id, name, username, created_at, updated_at").First(&user, context.Param("id")).Error != nil {
+		admin.JsonFail(context, http.StatusNotFound, "数据不存在")
+		return
+	}
+	admin.JsonSuccess(context, http.StatusOK, gin.H{"data": user})
+}
