@@ -116,15 +116,20 @@ func (admin *AdminUser) QueryTest(context *gin.Context) {
 	name := query.Get("name")
 	age := query.Get("age")
 	address := query.Get("address")
+
+	name2 := context.Query("name")
+	address2 := context.DefaultQuery("address", "重庆")
 	if address == "" {
 		admin.JsonFail(context, http.StatusBadRequest, "address 为空")
 		return
 	}
 
 	admin.JsonSuccess(context, http.StatusOK, gin.H{
-		"query":   context.Request.URL.Query(),
-		"name":    name,
-		"age":     age,
-		"address": address,
+		"query":    context.Request.URL.Query(),
+		"name":     name,
+		"age":      age,
+		"address":  address,
+		"name2":    name2,
+		"address2": address2,
 	})
 }
