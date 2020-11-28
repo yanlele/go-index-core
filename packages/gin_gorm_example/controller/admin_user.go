@@ -8,6 +8,7 @@ import (
 	"go-gorm-example/common/response"
 	"go-gorm-example/database"
 	"go-gorm-example/models"
+	"log"
 	"net/http"
 )
 
@@ -105,4 +106,25 @@ func (admin *AdminUser) FindOneUser(context *gin.Context) {
 		return
 	}
 	admin.JsonSuccess(context, http.StatusOK, gin.H{"data": user})
+}
+
+/* 只是做一个get参数测试 */
+func (admin *AdminUser) QueryTest(context *gin.Context) {
+	query := context.Request.URL.Query()
+	log.Println("query: ", query)
+
+	name := query.Get("name")
+	age := query.Get("age")
+	address := query.Get("address")
+	if address == "" {
+		admin.JsonFail(context, http.StatusBadRequest, "address 为空")
+		return
+	}
+
+	admin.JsonSuccess(context, http.StatusOK, gin.H{
+		"query":   context.Request.URL.Query(),
+		"name":    name,
+		"age":     age,
+		"address": address,
+	})
 }

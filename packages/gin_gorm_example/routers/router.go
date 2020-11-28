@@ -15,6 +15,7 @@ func InitRouter() *gin.Engine {
 		api.PATCH("/admin_user/:id", adminUser.Update)
 		api.DELETE("/admin_user/:id", adminUser.Destroy)
 		api.GET("/admin_user/:id", adminUser.FindOneUser)
+		api.GET("/query_test/", adminUser.QueryTest)
 	}
 
 	return router
