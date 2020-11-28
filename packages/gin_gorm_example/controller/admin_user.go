@@ -80,3 +80,20 @@ func (admin *AdminUser) Update(context *gin.Context) {
 	}
 	admin.JsonFail(context, http.StatusBadRequest, err.Error())
 }
+
+func (admin *AdminUser) Destroy(context *gin.Context) {
+	var user models.AdminUser
+	// 查询用户失败
+	if database.DB.First(&user, context.Param("id")).Error != nil {
+		admin.JsonFail(context, http.StatusNotFound, "数据不存在")
+		return
+	}
+
+	// 删除失败
+	if err := database.DB.Unscoped().Delete(&user).Error; err != nil {
+		admin.JsonFail(context, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	admin.JsonSuccess(context, http.StatusCreated, gin.H{})
+}

@@ -13,6 +13,7 @@ func InitRouter() *gin.Engine {
 		api.GET("/admin_users", adminUser.QueryAllUser)
 		api.POST("/admin_user", adminUser.Store)
 		api.PATCH("/admin_user/:id", adminUser.Update)
+		api.DELETE("/admin_user/:id", adminUser.Destroy)
 	}
 
 	return router
