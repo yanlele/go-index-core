@@ -6,8 +6,10 @@ import (
 	"gin-example/pkg/setting"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"log"
+	"os"
 	"time"
 )
 
@@ -41,7 +43,16 @@ func init() {
 		user,
 		password,
 		host,
-		dbName,
+		dbName)
+
+	// 日志相关
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold: time.Second,   // 慢 SQL 阈值
+			LogLevel:      logger.Silent, // Log level
+			Colorful:      true,          // 禁用彩色打印
+		},
 	)
 
 	db, err = gorm.Open(mysql.New(mysql.Config{
@@ -53,15 +64,15 @@ func init() {
 		SkipInitializeWithVersion: false,
 	}), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   tablePrefix,
-			SingularTable: true,
+			TablePrefix:   tablePrefix, // 所有 table 前缀
+			SingularTable: true,        // 最后 table 不加s
 		},
+		Logger: newLogger,
 	})
 
 	if err != nil {
 		log.Fatalf("models.Setup err: %v", err)
 	}
-
 
 	//gorm.DefaultTableNameHandler = func() {}
 	var sqlDB *sql.DB
