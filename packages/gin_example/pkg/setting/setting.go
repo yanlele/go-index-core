@@ -22,6 +22,10 @@ func init() {
 	if err != nil {
 		log.Fatalf("加载初始化文件 'conf/app.ini' 文件失败: %v", err)
 	}
+
+	LoadBase()
+	LoadServer()
+	LoadApp()
 }
 
 func LoadBase() {

@@ -89,5 +89,4 @@ func init() {
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	defer sqlDB.Close()
-
 }
