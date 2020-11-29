@@ -72,7 +72,7 @@ func DeleteTag(id int) bool {
 }
 
 // 通过 id 编辑 tag
-func EditTag(id int, data interface{}) bool {
+func EditTag(id int, data map[string]interface{}) bool {
 	if db.Model(&Tag{}).Where("id = ?", id).Updates(data).Error!= nil {
 		return true
 	}

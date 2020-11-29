@@ -73,28 +73,54 @@ func AddTag(context *gin.Context) {
 	})
 }
 
+/* 编辑tag */
 func EditTag(context *gin.Context) {
+	// 获取参数
 	id := com.StrTo(context.Query("id")).MustInt()
 	name := context.Query("name")
 	modifiedBy := context.Query("modified_by")
 
+	// 初始化验证
 	valid := validation.Validation{}
 
+	// 验证状态范围
 	var state = -1
 	if arg := context.Query("state"); arg != "" {
 		state = com.StrTo(arg).MustInt()
 		valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
 	}
 
+	// 验证状态
 	valid.Required(id, "id").Message("ID不能为空")
 	valid.Required(modifiedBy, "modified_by").Message("修改人不能为空")
 	valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
 	valid.MaxSize(name, 100, "name").Message("名称最长为100字符")
 
 	code := e.INVALID_PARAMS
+
+	// 没有错误
 	if !valid.HasErrors() {
 		code = e.SUCCESS
+		// 判定是否有这个 tag 存在
+		if models.ExistTagById(id) {
+			data := make(map[string]interface{})
+			data["modified_by"] = modifiedBy
+			if name != "" {
+				data["name"] = name
+			}
+			if state != -1 {
+				data["state"] = state
+			}
+			models.EditTag(id, data)
+		} else {
+			code = e.ERROR_NOT_EXIST_TAG
+		}
 	}
+	context.JSON(http.StatusOK, gin.H{
+		"code":    code,
+		"message": e.GetMsg(code),
+		"data":    make(map[string]interface{}),
+	})
 }
 
 func DeleteTag(context *gin.Context) {
