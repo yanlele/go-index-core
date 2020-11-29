@@ -156,3 +156,34 @@ func DeleteTag(context *gin.Context) {
 		"data":    make(map[string]interface{}),
 	})
 }
+
+func GetOneTag(context *gin.Context) {
+	id := com.StrTo(context.Param("id")).MustInt()
+	valid := validation.Validation{}
+	valid.Min(id, 1, "id").Message("id 必须大于1")
+
+	var tag models.Tag
+	var err error
+	code := e.INVALID_PARAMS
+	if !valid.HasErrors() {
+		code = e.SUCCESS
+		tag, err = models.FindOneTag(id)
+		if err != nil {
+			code = e.ERROR_NOT_EXIST_TAG
+			log.Println("require model error: ", err.Error())
+			context.JSON(http.StatusOK, gin.H{
+				"code":    code,
+				"message": e.GetMsg(code),
+			})
+			return
+		}
+	} else {
+		log.Println("has error : ", valid.Errors)
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"code":    code,
+		"message": e.GetMsg(code),
+		"data":    tag,
+	})
+}

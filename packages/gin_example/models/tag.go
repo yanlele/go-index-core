@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"log"
@@ -73,10 +74,21 @@ func DeleteTag(id int) bool {
 
 // 通过 id 编辑 tag
 func EditTag(id int, data map[string]interface{}) bool {
-	if db.Model(&Tag{}).Where("id = ?", id).Updates(data).Error!= nil {
+	if db.Model(&Tag{}).Where("id = ?", id).Updates(data).Error != nil {
 		return true
 	}
 	return false
+}
+
+func FindOneTag(id int) (tag Tag, err error) {
+	err = db.Where("id = ?", id).Find(&tag).Error
+	if tag.ID == 0 {
+		return tag , errors.New("tag is not exist")
+	}
+	if err != nil {
+		return tag, err
+	}
+	return tag, nil
 }
 
 /*

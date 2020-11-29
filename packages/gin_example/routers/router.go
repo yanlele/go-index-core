@@ -20,6 +20,8 @@ func InitRouter() *gin.Engine {
 		apiv1.PUT("/tags/:id", v1.EditTag)
 		//删除指定标签
 		apiv1.DELETE("/tags/:id", v1.DeleteTag)
+		// 获取指定id
+		apiv1.GET("/tags/:id", v1.GetOneTag)
 	}
 
 	return router
