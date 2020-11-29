@@ -123,6 +123,32 @@ func EditTag(context *gin.Context) {
 	})
 }
 
+/* 根据 id 删除tag */
 func DeleteTag(context *gin.Context) {
+	// 获取id
+	id := com.StrTo(context.Query("id")).MustInt()
 
+	// 初始化验证
+	valid := validation.Validation{}
+
+	// 校验
+	valid.Required(id, "id").Message("id 必须存在")
+	valid.Min(id, 1, "id").Message("id 必须大于1")
+
+	code := e.INVALID_PARAMS
+
+	if !valid.HasErrors() {
+		code = e.SUCCESS
+		if models.ExistTagById(id) {
+			models.DeleteTag(id)
+		} else {
+			code = e.ERROR_NOT_EXIST_TAG
+		}
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"code":    code,
+		"message": e.GetMsg(code),
+		"data":    make(map[string]interface{}),
+	})
 }
