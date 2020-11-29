@@ -1,11 +1,14 @@
 package models
 
 import (
+	"database/sql"
 	"fmt"
 	"gin-example/pkg/setting"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"log"
+	"time"
 )
 
 /* 初始化数据库链接 */
@@ -19,15 +22,15 @@ type Model struct {
 
 func init() {
 	var (
-		err                                               error
-		dbType,
+		err error
+		//dbType,
 		dbName, user, password, host, tablePrefix string
 	)
 	sec, err := setting.Cig.GetSection("database")
 	if err != nil {
 		log.Fatalf("Fail to get section 'databse': %v", err)
 	}
-	dbType = sec.Key("TYPE").MustString("mysql")
+	//dbType = sec.Key("TYPE").MustString("mysql")
 	dbName = sec.Key("NAME").MustString("blog")
 	user = sec.Key("USER").MustString("root")
 	password = sec.Key("PASSWORD").String()
@@ -48,7 +51,32 @@ func init() {
 		DontSupportRenameIndex:    true, // 重命名索引时采用删除并新建的方式，MySQL 5.7 之前的数据库和 MariaDB 不支持重命名索引
 		DontSupportRenameColumn:   true, // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
 		SkipInitializeWithVersion: false,
-	}), &gorm.Config{})
+	}), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   tablePrefix,
+			SingularTable: true,
+		},
+	})
+
+	if err != nil {
+		log.Fatalf("models.Setup err: %v", err)
+	}
+
 
 	//gorm.DefaultTableNameHandler = func() {}
+	var sqlDB *sql.DB
+	sqlDB, err = db.DB()
+	if err != nil {
+		log.Fatalf("get db.BD() error: %v", err)
+	}
+
+	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
+	sqlDB.SetMaxIdleConns(10)
+	// SetMaxOpenConns 设置打开数据库连接的最大数量。
+	sqlDB.SetMaxOpenConns(100)
+	// SetConnMaxLifetime 设置了连接可复用的最大时间。
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	defer sqlDB.Close()
+
 }
