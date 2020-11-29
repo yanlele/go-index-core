@@ -2,7 +2,9 @@ package models
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 type Tag struct {
@@ -49,4 +51,14 @@ func AddTag(name string, state int, createdBy string) bool {
 		return false
 	}
 	return true
+}
+
+func (tag *Tag) BeforeCreate(tx *gorm.DB) (err error) {
+	tag.CreatedOn = time.Now().Unix()
+	return
+}
+
+func (tag *Tag) BeforeUpdate(tx *gorm.DB) (err error) {
+	tag.ModifiedOn = time.Now().Unix()
+	return nil
 }
