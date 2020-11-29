@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
+	"log"
 	"net/http"
 )
 
@@ -76,7 +77,7 @@ func AddTag(context *gin.Context) {
 /* 编辑tag */
 func EditTag(context *gin.Context) {
 	// 获取参数
-	id := com.StrTo(context.Query("id")).MustInt()
+	id := com.StrTo(context.Param("id")).MustInt()
 	name := context.Query("name")
 	modifiedBy := context.Query("modified_by")
 
@@ -115,7 +116,10 @@ func EditTag(context *gin.Context) {
 		} else {
 			code = e.ERROR_NOT_EXIST_TAG
 		}
+	} else {
+		log.Panicln("has error", valid.Errors)
 	}
+
 	context.JSON(http.StatusOK, gin.H{
 		"code":    code,
 		"message": e.GetMsg(code),
