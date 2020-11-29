@@ -15,6 +15,7 @@ import (
 
 /* 初始化数据库链接 */
 var db *gorm.DB
+var sqlDB *sql.DB
 
 type Model struct {
 	ID         int `gorm:"primary_key" json:"id"`
@@ -75,7 +76,6 @@ func init() {
 	}
 
 	//gorm.DefaultTableNameHandler = func() {}
-	var sqlDB *sql.DB
 	sqlDB, err = db.DB()
 	if err != nil {
 		log.Fatalf("get db.BD() error: %v", err)
@@ -87,6 +87,8 @@ func init() {
 	sqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
+}
 
-	defer sqlDB.Close()
+func Close() {
+	sqlDB.Close()
 }

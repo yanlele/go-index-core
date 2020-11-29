@@ -1,5 +1,10 @@
 package models
 
+import (
+	"fmt"
+	"log"
+)
+
 type Tag struct {
 	Model
 	Name       string `json:"name"`
@@ -37,8 +42,10 @@ func AddTag(name string, state int, createdBy string) bool {
 		State:     state,
 		CreatedBy: createdBy,
 	})
+	fmt.Println("error ", dbResult.Error)
 
 	if dbResult.Error != nil {
+		log.Fatalf("has error: %v", dbResult.Error)
 		return false
 	}
 	return true
