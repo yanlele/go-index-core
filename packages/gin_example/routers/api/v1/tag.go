@@ -74,7 +74,27 @@ func AddTag(context *gin.Context) {
 }
 
 func EditTag(context *gin.Context) {
+	id := com.StrTo(context.Query("id")).MustInt()
+	name := context.Query("name")
+	modifiedBy := context.Query("modified_by")
 
+	valid := validation.Validation{}
+
+	var state = -1
+	if arg := context.Query("state"); arg != "" {
+		state = com.StrTo(arg).MustInt()
+		valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
+	}
+
+	valid.Required(id, "id").Message("ID不能为空")
+	valid.Required(modifiedBy, "modified_by").Message("修改人不能为空")
+	valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
+	valid.MaxSize(name, 100, "name").Message("名称最长为100字符")
+
+	code := e.INVALID_PARAMS
+	if !valid.HasErrors() {
+		code = e.SUCCESS
+	}
 }
 
 func DeleteTag(context *gin.Context) {

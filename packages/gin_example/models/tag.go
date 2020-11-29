@@ -53,6 +53,39 @@ func AddTag(name string, state int, createdBy string) bool {
 	return true
 }
 
+// 通过 id 判定是否存在tag
+func ExistTagById(id int) bool {
+	var tag Tag
+	db.Select("id").Where("id = ?", id).First(&tag)
+	if tag.ID > 0 {
+		return true
+	}
+	return false
+}
+
+// 通过 id 删除 tag
+func DeleteTag(id int) bool {
+	if db.Delete(&Tag{}).Where("id = ?", id).Error != nil {
+		return true
+	}
+	return false
+}
+
+// 通过 id 编辑 tag
+func EditTag(id int, data interface{}) bool {
+	if db.Model(&Tag{}).Where("id = ?", id).Updates(data).Error!= nil {
+		return true
+	}
+	return false
+}
+
+/*
+gorm所支持的回调方法：
+	创建：BeforeSave、BeforeCreate、AfterCreate、AfterSave
+	更新：BeforeSave、BeforeUpdate、AfterUpdate、AfterSave
+	删除：BeforeDelete、AfterDelete
+	查询：AfterFind
+*/
 func (tag *Tag) BeforeCreate(tx *gorm.DB) (err error) {
 	tag.CreatedOn = time.Now().Unix()
 	return
