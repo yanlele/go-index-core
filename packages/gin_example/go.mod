@@ -13,7 +13,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/ugorji/go v1.2.0 // indirect
-	github.com/unknwon/com v1.0.1 // indirect
+	github.com/unknwon/com v1.0.1
 	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392 // indirect
 	golang.org/x/sys v0.0.0-20201126233918-771906719818 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
