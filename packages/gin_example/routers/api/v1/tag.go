@@ -130,7 +130,7 @@ func EditTag(context *gin.Context) {
 /* 根据 id 删除tag */
 func DeleteTag(context *gin.Context) {
 	// 获取id
-	id := com.StrTo(context.Query("id")).MustInt()
+	id := com.StrTo(context.Param("id")).MustInt()
 
 	// 初始化验证
 	valid := validation.Validation{}
