@@ -65,7 +65,7 @@ func ExistTagById(id int) bool {
 
 // 通过 id 删除 tag
 func DeleteTag(id int) bool {
-	if db.Delete(&Tag{}).Where("id = ?", id).Error != nil {
+	if db.Where("id = ?", id).Delete(&Tag{}).Error != nil {
 		return true
 	}
 	return false
