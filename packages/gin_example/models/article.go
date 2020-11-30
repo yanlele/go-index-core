@@ -48,7 +48,18 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error
 	return articles, err
 }
 
-/* 获取单个文章 */
+/*
+获取单个文章
+
+实体关联：https://gorm.io/zh_CN/docs/associations.html
+*/
+func GetArticle(id int) (article Article) {
+	db.Where("id = ?", id).First(&article)
+	_ = db.Model(&article).Association("tag").Find(&article.Tag)
+	return
+}
+
+
 
 func (article *Article) BeforeCreate() error {
 	article.CreatedOn = time.Now().Unix()
