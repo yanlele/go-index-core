@@ -77,6 +77,11 @@ func AddArticle(data map[string]interface{}) bool {
 	return true
 }
 
+func DeleteArticle(id int) bool {
+	db.Where("id = ?", id).Delete(&Article{})
+	return true
+}
+
 func (article *Article) BeforeCreate() error {
 	article.CreatedOn = time.Now().Unix()
 	return nil
