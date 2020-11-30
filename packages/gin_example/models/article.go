@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/unknwon/com"
 	"gorm.io/gorm"
 	"time"
 )
@@ -59,7 +60,22 @@ func GetArticle(id int) (article Article) {
 	return
 }
 
+func EditArticle(id int, data interface{}) bool {
+	db.Model(&Article{}).Where("id = ?", id).Updates(data)
+	return true
+}
 
+func AddArticle(data map[string]interface{}) bool {
+	db.Create(&Article{
+		TagID:     data["tag_id"].(int),
+		Title:     data["title"].(string),
+		Desc:      com.ToStr(data["desc"]),
+		Content:   com.ToStr(data["content"]),
+		CreatedBy: com.ToStr(data["created_by"]),
+		State:     data["state"].(int),
+	})
+	return true
+}
 
 func (article *Article) BeforeCreate() error {
 	article.CreatedOn = time.Now().Unix()
