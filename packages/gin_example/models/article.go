@@ -48,7 +48,7 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error
 	return articles, err
 }
 
-/*  */
+/* 获取单个文章 */
 
 func (article *Article) BeforeCreate() error {
 	article.CreatedOn = time.Now().Unix()
