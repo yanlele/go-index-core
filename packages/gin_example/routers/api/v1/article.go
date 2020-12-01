@@ -3,6 +3,8 @@ package v1
 import (
 	"gin-example/models"
 	"gin-example/pkg/e"
+	"gin-example/pkg/setting"
+	"gin-example/pkg/util"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
@@ -27,7 +29,7 @@ func GetArticle(context *gin.Context) {
 		}
 	} else {
 		for _, err := range valid.Errors {
-			log.Println("err.key: %s, err.message: %s", err.Key, err.Message)
+			log.Printf("err.key: %s, err.message: %s\n", err.Key, err.Message)
 		}
 	}
 
@@ -64,8 +66,23 @@ func GetArticles(context *gin.Context) {
 	}
 
 	// 如果不存在错误， 就分页查询
+	code := e.INVALID_PARAMS
+	if !valid.HasErrors() {
+		code = e.SUCCESS
+		data["lists"], _ = models.GetArticles(util.GetPage(context), setting.PageSize, maps)
+		data["total"], _ = models.GetArticleTotal(maps)
+	} else {
+		for _, err := range valid.Errors {
+			log.Printf("err.key : %s, err.message : %s\n", err.Key, err.Message)
+		}
+	}
 
 	// 返回json
+	context.JSON(http.StatusOK, gin.H{
+		"code":    code,
+		"message": e.GetMsg(code),
+		"data":    data,
+	})
 }
 
 func AddArticle(context *gin.Context) {
