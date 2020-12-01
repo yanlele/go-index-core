@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
+	"go/ast"
 	"log"
 	"net/http"
 )
@@ -135,7 +136,40 @@ func AddArticle(context *gin.Context) {
 	})
 }
 
+/*
+编辑文章
+
+todo 用 shouldBind 来改造
+*/
 func EditArticle(context *gin.Context) {
+	valid := validation.Validation{}
+
+	id := com.StrTo(context.Param("id")).MustInt()
+	tagId := com.StrTo(context.Query("tag_id")).MustInt()
+	title := context.Query("title")
+	desc := context.Query("desc")
+	content := context.Query("content")
+	modifiedBy := context.Query("modified_by")
+
+	var state int = -1
+	if arg := context.Query("state"); arg != "" {
+		state = com.StrTo(arg).MustInt()
+		valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
+	}
+
+	valid.Min(tagId, 1, "tag_id").Message("标签ID必须大于0")
+	valid.Min(id, 1, "id").Message("ID必须大于0")
+	valid.MaxSize(title, 100, "title").Message("标题最长为100字符")
+	valid.MaxSize(desc, 255, "desc").Message("简述最长为255字符")
+	valid.MaxSize(content, 65535, "content").Message("内容最长为65535字符")
+	valid.Required(modifiedBy, "modified_by").Message("修改人不能为空")
+	valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
+
+
+	code := e.INVALID_PARAMS
+	if valid.HasErrors() {
+
+	}
 
 }
 
