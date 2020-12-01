@@ -85,8 +85,54 @@ func GetArticles(context *gin.Context) {
 	})
 }
 
+/*
+新增文章
+todo post 接口， 之后可以并 shouldBind 来改造
+*/
 func AddArticle(context *gin.Context) {
+	tagId := com.StrTo(context.Query("tag_id")).MustInt()
+	title := context.Query("title")
+	desc := context.Query("desc")
+	content := context.Query("content")
+	createdBy := context.Query("created_by")
+	state := com.StrTo(context.DefaultQuery("state", "0")).MustInt()
 
+	valid := validation.Validation{}
+	valid.Min(tagId, 1, "tag_id").Message("标签ID必须大于0")
+	valid.Required(title, "title").Message("标题不能为空")
+	valid.Required(desc, "desc").Message("简述不能为空")
+	valid.Required(content, "content").Message("内容不能为空")
+	valid.Required(createdBy, "created_by").Message("创建人不能为空")
+	valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
+
+	code := e.INVALID_PARAMS
+
+	if !valid.HasErrors() {
+		if models.ExistTagById(tagId) {
+			data := make(map[string]interface{})
+			data["tag_id"] = tagId
+			data["title"] = title
+			data["desc"] = desc
+			data["content"] = content
+			data["created_by"] = createdBy
+			data["state"] = state
+
+			models.AddArticle(data)
+			code = e.SUCCESS
+		} else {
+			code = e.ERROR_NOT_EXIST_TAG
+		}
+	} else {
+		for _, err := range valid.Errors {
+			log.Printf("err.key : %s, err.message : %s\n", err.Key, err.Message)
+		}
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"code":    code,
+		"message": e.GetMsg(code),
+		"data":    make(map[string]interface{}),
+	})
 }
 
 func EditArticle(context *gin.Context) {
