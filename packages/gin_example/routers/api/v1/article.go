@@ -208,5 +208,34 @@ func EditArticle(context *gin.Context) {
 }
 
 func DeleteArticle(context *gin.Context) {
+	id := com.StrTo(context.Param("id")).MustInt()
+	valid := validation.Validation{}
 
+	valid.Min(id, 1, "id").Message("id 必须大于0")
+
+	code := e.INVALID_PARAMS
+	if valid.HasErrors() {
+		var message string
+		for _, err := range valid.Errors[0:1] {
+			message = err.Message
+		}
+		context.JSON(http.StatusOK, gin.H{
+			"code":    code,
+			"message": message,
+		})
+		return
+	}
+
+	if models.ExistArticleByID(id) {
+		models.DeleteArticle(id)
+		code = e.SUCCESS
+	} else {
+		code = e.ERROR_NOT_EXIST_ARTICLE
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"code":    code,
+		"message": e.GetMsg(code),
+		"data":    make(map[string]interface{}),
+	})
 }
