@@ -1,8 +1,8 @@
 package models
 
 import (
-	"github.com/unknwon/com"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
 
@@ -14,7 +14,7 @@ type Article struct {
 	Title         string `json:"title"`
 	Desc          string `json:"desc"`
 	Content       string `json:"content"`
-	CoverImageUrl string `json:"cover_image_url"`
+	//CoverImageUrl string `json:"cover_image_url"`
 	CreatedBy     string `json:"created_by"`
 	ModifiedBy    string `json:"modified_by"`
 	State         int    `json:"state"`
@@ -66,14 +66,18 @@ func EditArticle(id int, data interface{}) bool {
 }
 
 func AddArticle(data map[string]interface{}) bool {
-	db.Create(&Article{
+	err := db.Create(&Article{
 		TagID:     data["tag_id"].(int),
 		Title:     data["title"].(string),
-		Desc:      com.ToStr(data["desc"]),
-		Content:   com.ToStr(data["content"]),
-		CreatedBy: com.ToStr(data["created_by"]),
+		Desc:      data["desc"].(string),
+		Content:   data["content"].(string),
+		CreatedBy: data["created_by"].(string),
 		State:     data["state"].(int),
-	})
+	}).Error
+	if err != nil {
+		log.Panicf("create has error: %s", err.Error())
+		return false
+	}
 	return true
 }
 
