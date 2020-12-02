@@ -8,7 +8,6 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
-	"go/ast"
 	"log"
 	"net/http"
 )
@@ -165,12 +164,47 @@ func EditArticle(context *gin.Context) {
 	valid.Required(modifiedBy, "modified_by").Message("修改人不能为空")
 	valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
 
-
 	code := e.INVALID_PARAMS
 	if valid.HasErrors() {
-
+		var message string
+		for _, err := range valid.Errors[0:1] {
+			log.Printf("err.key: %s,  err.message: %s", err.Key, err.Message)
+			message = err.Message
+		}
+		context.JSON(http.StatusOK, gin.H{
+			"code":    code,
+			"message": message,
+		})
+		return
 	}
 
+	if models.ExistArticleByID(id) && models.ExistTagById(tagId) {
+		data := make(map[string]interface{})
+		if tagId > 0 {
+			data["tag_id"] = tagId
+		}
+
+		if title != "" {
+			data["title"] = title
+		}
+
+		if desc != "" {
+			data["desc"] = desc
+		}
+
+		if content != "" {
+			data["content"] = content
+		}
+
+		data["modified_by"] = modifiedBy
+		models.EditArticle(id, data)
+		code = e.SUCCESS
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"code":    code,
+		"message": e.GetMsg(code),
+		"data":    make(map[string]interface{}),
+	})
 }
 
 func DeleteArticle(context *gin.Context) {
