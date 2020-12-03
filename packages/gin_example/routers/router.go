@@ -2,6 +2,7 @@ package routers
 
 import (
 	"gin-example/pkg/setting"
+	"gin-example/routers/api"
 	v1 "gin-example/routers/api/v1"
 	"github.com/gin-gonic/gin"
 )
@@ -9,6 +10,8 @@ import (
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 	gin.SetMode(setting.RunMode)
+
+	router.GET("/auth", api.GetAuth)
 
 	apiv1 := router.Group("/api/v1")
 	{
@@ -22,7 +25,6 @@ func InitRouter() *gin.Engine {
 		apiv1.DELETE("/tags/:id", v1.DeleteTag)
 		// 获取指定id
 		apiv1.GET("/tags/:id", v1.GetOneTag)
-
 
 		//获取文章列表
 		apiv1.GET("/articles", v1.GetArticles)

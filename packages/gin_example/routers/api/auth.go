@@ -1,4 +1,4 @@
-package routers
+package api
 
 import (
 	"gin-example/models"
