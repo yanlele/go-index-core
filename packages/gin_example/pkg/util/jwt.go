@@ -1,26 +1,33 @@
 package util
 
 import (
+	"gin-example/models"
 	"gin-example/pkg/setting"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/tidwall/gjson"
+	"log"
+	"strings"
 	"time"
 )
-
-var jwtSecret = []byte(setting.JwtSecret)
 
 type Claims struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Id       int    `json:"id"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(username, password string) (string, error) {
+func GenerateToken(username, password string, id int) (string, error) {
+	// 这个地方可以考虑通过密码动态授权
+	var jwtSecret = []byte(setting.JwtSecret + password)
+
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
 
 	claims := Claims{
 		username,
 		password,
+		id,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    "gin-blog",
@@ -33,8 +40,28 @@ func GenerateToken(username, password string) (string, error) {
 }
 
 func ParseToken(token string) (*Claims, error) {
+	payload := strings.Split(token, ".")
+
+	// 获取token 的中间段信息
+	bytes, e := jwt.DecodeSegment(payload[1])
+
+	if e != nil {
+		println(e.Error())
+	}
+	content := ""
+	for i := 0; i < len(bytes); i++ {
+		content += string(bytes[i])
+	}
+
+	id := gjson.Get(content, "id").Int()
+
+	log.Println("id", id)
+	user := models.GetAuthById(id)
+	log.Println("user", user)
+
+	// 通过密码动态授权
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
+		return []byte(setting.JwtSecret + user.Password), nil
 	})
 	if tokenClaims != nil {
 		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
