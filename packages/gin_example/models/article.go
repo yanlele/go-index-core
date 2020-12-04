@@ -86,12 +86,12 @@ func DeleteArticle(id int) bool {
 	return true
 }
 
-func (article *Article) BeforeCreate() error {
+func (article *Article) BeforeCreate(tx *gorm.DB) (err error) {
 	article.CreatedOn = time.Now().Unix()
-	return nil
+	return
 }
 
-func (article *Article) BeforeUpdate() error {
+func (article *Article) BeforeUpdate(tx *gorm.DB) (err error) {
 	article.ModifiedOn = time.Now().Unix()
-	return nil
+	return
 }
