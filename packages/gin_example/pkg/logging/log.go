@@ -2,6 +2,7 @@ package logging
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -30,10 +31,21 @@ const (
 )
 
 func init() {
+
+
 	filePath := getLogFileFullPath()
+	// 文件写入器
 	F = openLogFile(filePath)
 
-	logger = log.New(F, DefaultPrefix, log.LstdFlags)
+	writers := []io.Writer{
+		F,
+		os.Stdout, // 控制台标准写入器
+	}
+
+	// 多个写入器
+	fileAndStdoutWriter := io.MultiWriter(writers...)
+
+	logger = log.New(fileAndStdoutWriter, DefaultPrefix, log.LstdFlags)
 }
 
 func Debug(v ...interface{}) {
