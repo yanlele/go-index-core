@@ -2,10 +2,10 @@ package util
 
 import (
 	"gin-example/models"
+	"gin-example/pkg/logging"
 	"gin-example/pkg/setting"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/tidwall/gjson"
-	"log"
 	"strings"
 	"time"
 )
@@ -55,9 +55,9 @@ func ParseToken(token string) (*Claims, error) {
 
 	id := gjson.Get(content, "id").Int()
 
-	log.Println("id", id)
+	logging.Info("id", id)
 	user := models.GetAuthById(id)
-	log.Println("user", user)
+	logging.Info("user", user)
 
 	// 通过密码动态授权
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {

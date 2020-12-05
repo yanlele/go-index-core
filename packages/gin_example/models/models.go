@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"gin-example/pkg/logging"
 	"gin-example/pkg/setting"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -31,7 +32,7 @@ func init() {
 	)
 	sec, err := setting.Cig.GetSection("database")
 	if err != nil {
-		log.Fatalf("Fail to get section 'databse': %v", err)
+		logging.Warn("Fail to get section 'databse': %v", err)
 	}
 	//dbType = sec.Key("TYPE").MustString("mysql")
 	dbName = sec.Key("NAME").MustString("blog")
@@ -72,13 +73,13 @@ func init() {
 	})
 
 	if err != nil {
-		log.Fatalf("models.Setup err: %v", err)
+		logging.Error("models.Setup err: %v", err)
 	}
 
 	//gorm.DefaultTableNameHandler = func() {}
 	sqlDB, err = db.DB()
 	if err != nil {
-		log.Fatalf("get db.BD() error: %v", err)
+		logging.Error("get db.BD() error: %v", err)
 	}
 
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量

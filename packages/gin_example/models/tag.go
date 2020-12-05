@@ -3,8 +3,8 @@ package models
 import (
 	"errors"
 	"fmt"
+	"gin-example/pkg/logging"
 	"gorm.io/gorm"
-	"log"
 	"time"
 )
 
@@ -48,7 +48,7 @@ func AddTag(name string, state int, createdBy string) bool {
 	fmt.Println("error ", dbResult.Error)
 
 	if dbResult.Error != nil {
-		log.Fatalf("has error: %v", dbResult.Error)
+		logging.Fatal("has error: %v", dbResult.Error)
 		return false
 	}
 	return true

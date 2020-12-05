@@ -3,12 +3,12 @@ package v1
 import (
 	"gin-example/models"
 	"gin-example/pkg/e"
+	"gin-example/pkg/logging"
 	"gin-example/pkg/setting"
 	"gin-example/pkg/util"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
-	"log"
 	"net/http"
 )
 
@@ -117,7 +117,7 @@ func EditTag(context *gin.Context) {
 			code = e.ERROR_NOT_EXIST_TAG
 		}
 	} else {
-		log.Panicln("has error", valid.Errors)
+		logging.Error("has error", valid.Errors)
 	}
 
 	context.JSON(http.StatusOK, gin.H{
@@ -170,7 +170,7 @@ func GetOneTag(context *gin.Context) {
 		tag, err = models.FindOneTag(id)
 		if err != nil {
 			code = e.ERROR_NOT_EXIST_TAG
-			log.Println("require model error: ", err.Error())
+			logging.Info("require model error: ", err.Error())
 			context.JSON(http.StatusOK, gin.H{
 				"code":    code,
 				"message": e.GetMsg(code),
@@ -178,7 +178,7 @@ func GetOneTag(context *gin.Context) {
 			return
 		}
 	} else {
-		log.Println("has error : ", valid.Errors)
+		logging.Info("has error : ", valid.Errors)
 	}
 
 	context.JSON(http.StatusOK, gin.H{

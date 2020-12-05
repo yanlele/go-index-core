@@ -1,8 +1,8 @@
 package models
 
 import (
+	"gin-example/pkg/logging"
 	"gorm.io/gorm"
-	"log"
 	"time"
 )
 
@@ -75,7 +75,7 @@ func AddArticle(data map[string]interface{}) bool {
 		State:     data["state"].(int),
 	}).Error
 	if err != nil {
-		log.Panicf("create has error: %s", err.Error())
+		logging.Warn("create has error: %s", err.Error())
 		return false
 	}
 	return true
