@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"gin-example/pkg/e"
+	"gin-example/pkg/logging"
 	"gin-example/pkg/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -28,6 +29,7 @@ func Jwt() gin.HandlerFunc {
 		}
 
 		if code != e.SUCCESS {
+			logging.Error("error: ", e.GetMsg(code))
 			context.JSON(http.StatusUnauthorized, gin.H{
 				"code":    code,
 				"message": e.GetMsg(code),
