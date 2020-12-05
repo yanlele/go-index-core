@@ -52,3 +52,4 @@ INSERT INTO `blog`.`blog_auth` (`id`, `username`, `password`) VALUES (null, 'tes
 
 ### 参考
 - [Go Gin Example](https://github.com/EDDYCJY/go-gin-example/blob/master/README_ZH.md)
+- [https://eddycjy.com/go-categories/](https://eddycjy.com/go-categories/)
