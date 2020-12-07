@@ -31,8 +31,6 @@ const (
 )
 
 func Setup() {
-
-
 	filePath := getLogFileFullPath()
 	// 文件写入器
 	F = openLogFile(filePath)

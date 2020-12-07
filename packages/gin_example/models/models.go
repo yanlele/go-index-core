@@ -86,7 +86,7 @@ func Setup() {
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	// 创建表
-	_ = db.AutoMigrate(&Article{}, &Auth{}, &Tag{})
+	//_ = db.AutoMigrate(&Article{}, &Auth{}, &Tag{})
 }
 
 func Close() {
