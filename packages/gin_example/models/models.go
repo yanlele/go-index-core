@@ -31,16 +31,13 @@ func init() {
 		//dbType,
 		dbName, user, password, host, tablePrefix string
 	)
-	sec, err := setting.Cig.GetSection("database")
-	if err != nil {
-		logging.Warn("Fail to get section 'databse': %v", err)
-	}
+
 	//dbType = sec.Key("TYPE").MustString("mysql")
-	dbName = sec.Key("NAME").MustString("blog")
-	user = sec.Key("USER").MustString("root")
-	password = sec.Key("PASSWORD").String()
-	host = sec.Key("HOST").String()
-	tablePrefix = sec.Key("TABLE_PREFIX").String()
+	dbName = setting.DatabaseSetting.Type
+	user = setting.DatabaseSetting.User
+	password = setting.DatabaseSetting.Password
+	host = setting.DatabaseSetting.Host
+	tablePrefix = setting.DatabaseSetting.TablePrefix
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		user,
