@@ -32,7 +32,6 @@ func GetAuth(context *gin.Context) {
 
 			if err != nil {
 				code = e.ERROR_AUTH_TOKEN
-				logging.Fatal(err.Error())
 			} else {
 				data["token"] = token
 				code = e.SUCCESS

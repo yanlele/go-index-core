@@ -14,7 +14,7 @@ import (
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
-	gin.SetMode(setting.ServerSetting.RunMode)
+	gin.SetMode(setting.RunMode)
 
 	router.GET("/auth", api.GetAuth)
 

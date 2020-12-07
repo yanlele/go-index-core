@@ -19,7 +19,7 @@ type Claims struct {
 
 func GenerateToken(username, password string, id int) (string, error) {
 	// 这个地方可以考虑通过密码动态授权
-	var jwtSecret = []byte(setting.AppSetting.JwtSecret + password)
+	var jwtSecret = []byte(setting.JwtSecret + password)
 
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
@@ -61,7 +61,7 @@ func ParseToken(token string) (*Claims, error) {
 
 	// 通过密码动态授权
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(setting.AppSetting.JwtSecret + user.Password), nil
+		return []byte(setting.JwtSecret + user.Password), nil
 	})
 	if tokenClaims != nil {
 		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {

@@ -1,8 +1,8 @@
 package setting
 
 import (
+	"gin-example/pkg/logging"
 	"github.com/go-ini/ini"
-	"log"
 	"time"
 )
 
@@ -47,25 +47,25 @@ var DatabaseSetting = &Database{}
 func Setup() {
 	appConfig, err := ini.Load("conf/app.ini")
 	if err != nil {
-		log.Fatalf("加载初始化文件 'conf/app.ini' 文件失败: %v", err)
+		logging.Fatal("加载初始化文件 'conf/app.ini' 文件失败: %v", err)
 	}
 
 	err = appConfig.Section("app").MapTo(AppSetting)
 	if err != nil {
-		log.Fatalf("config mapTo AppSetting err : %v", err)
+		logging.Fatal("config mapTo AppSetting err : ", err.Error())
 	}
 	AppSetting.ImageMaxSize = AppSetting.ImageMaxSize * 1024 * 1024
 
 	err = appConfig.Section("server").MapTo(ServerSetting)
 	if err != nil {
-		log.Fatalf("config mapTo ServerSetting err: %v", err)
+		logging.Fatal("config mapTo ServerSetting err: ", err.Error())
 	}
 	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
 	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
 
 	err = appConfig.Section("database").MapTo(DatabaseSetting)
 	if err != nil {
-		log.Fatalf("config mapTo DatabaseSetting err: %v", err)
+		logging.Fatal("config mapTo DatabaseSetting err: ", err.Error())
 	}
 }
 
