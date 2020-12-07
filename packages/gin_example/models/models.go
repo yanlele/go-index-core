@@ -19,9 +19,10 @@ var db *gorm.DB
 var sqlDB *sql.DB
 
 type Model struct {
-	ID         int `gorm:"primary_key" json:"id"`
+	ID         int   `gorm:"primary_key" json:"id"`
 	CreatedOn  int64 `json:"created_on"`
 	ModifiedOn int64 `json:"modified_on"`
+	DeletedOn  gorm.DeletedAt
 }
 
 func init() {
@@ -88,6 +89,9 @@ func init() {
 	sqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	// 创建表
+	_ = db.AutoMigrate(&Article{}, &Auth{}, &Tag{})
 }
 
 func Close() {
