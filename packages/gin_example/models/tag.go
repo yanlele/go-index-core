@@ -91,10 +91,6 @@ func FindOneTag(id int) (tag Tag, err error) {
 	return tag, nil
 }
 
-func CleanAllTag() bool {
-	db.Unscoped().Where("deleted_on != ?", 0).Delete(&Tag{})
-	return true
-}
 /*
 gorm所支持的回调方法：
 	创建：BeforeSave、BeforeCreate、AfterCreate、AfterSave
