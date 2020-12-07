@@ -25,12 +25,14 @@ type Model struct {
 	DeletedOn  gorm.DeletedAt
 }
 
-func Setup() {
+func init() {
 	var (
 		err error
+		//dbType,
 		dbName, user, password, host, tablePrefix string
 	)
 
+	//dbType = sec.Key("TYPE").MustString("mysql")
 	dbName = setting.DatabaseSetting.Type
 	user = setting.DatabaseSetting.User
 	password = setting.DatabaseSetting.Password

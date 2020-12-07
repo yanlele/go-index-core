@@ -44,7 +44,7 @@ type Database struct {
 
 var DatabaseSetting = &Database{}
 
-func Setup() {
+func init() {
 	appConfig, err := ini.Load("conf/app.ini")
 	if err != nil {
 		logging.Fatal("加载初始化文件 'conf/app.ini' 文件失败: %v", err)
