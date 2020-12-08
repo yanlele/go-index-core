@@ -1,52 +1,70 @@
 package setting
 
 import (
-	"gin-example/pkg/logging"
 	"github.com/go-ini/ini"
+	"log"
 	"time"
 )
 
-var (
-	Cig          *ini.File
+type App struct {
+	JwtSecret       string
+	PageSize        int
+	RuntimeRootPath string
+
+	ImagePrefixUrl string
+	ImageSavePath  string
+	ImageMaxSize   int
+	ImageAllowExts []string
+
+	LogSavePath string
+	LogSaveName string
+	LogFileExt  string
+	TimeFormat  string
+}
+
+var AppSetting = &App{}
+
+type Server struct {
 	RunMode      string
-	HTTPPort     int
+	HttpPort     int
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
-	PageSize     int
-	JwtSecret    string
-)
-
-func init() {
-	var err error
-	Cig, err = ini.Load("conf/app.ini")
-	if err != nil {
-		logging.Fatal("加载初始化文件 'conf/app.ini' 文件失败: %v", err)
-	}
-
-	LoadBase()
-	LoadServer()
-	LoadApp()
 }
 
-func LoadBase() {
-	RunMode = Cig.Section("").Key("RUN_MODE").MustString("debug")
+var ServerSetting = &Server{}
+
+type Database struct {
+	Type        string
+	User        string
+	Password    string
+	Host        string
+	Name        string
+	TablePrefix string
 }
 
-func LoadServer() {
-	sec, err := Cig.GetSection("server")
-	if err != nil {
-		logging.Fatal("Fail to get section 'server': %v", err)
-	}
-	HTTPPort = sec.Key("HTTP_PORT").MustInt(8000)
-	ReadTimeout = time.Duration(sec.Key("READ_TIMEOUT").MustInt(60)) * time.Second
-	WriteTimeout = time.Duration(sec.Key("WRITE_TIMEOUT").MustInt(60)) * time.Second
-}
+var DatabaseSetting = &Database{}
 
-func LoadApp() {
-	sec, err := Cig.GetSection("app")
+func Setup() {
+	appConfig, err := ini.Load("conf/app.ini")
 	if err != nil {
-		logging.Fatal("Fail to get section 'app': %v", err)
+		log.Fatalf("加载初始化文件 'conf/app.ini' 文件失败: %v", err)
 	}
-	JwtSecret = sec.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
-	PageSize = sec.Key("PAGE_SIZE").MustInt(10)
+
+	err = appConfig.Section("app").MapTo(AppSetting)
+	if err != nil {
+		log.Fatalf("config mapTo AppSetting err : %v", err)
+	}
+	AppSetting.ImageMaxSize = AppSetting.ImageMaxSize * 1024 * 1024
+
+	err = appConfig.Section("server").MapTo(ServerSetting)
+	if err != nil {
+		log.Fatalf("config mapTo ServerSetting err: %v", err)
+	}
+	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
+	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
+
+	err = appConfig.Section("database").MapTo(DatabaseSetting)
+	if err != nil {
+		log.Fatalf("config mapTo DatabaseSetting err: %v", err)
+	}
 }

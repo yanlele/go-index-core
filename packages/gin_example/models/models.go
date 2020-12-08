@@ -19,27 +19,23 @@ var db *gorm.DB
 var sqlDB *sql.DB
 
 type Model struct {
-	ID         int `gorm:"primary_key" json:"id"`
+	ID         int   `gorm:"primary_key" json:"id"`
 	CreatedOn  int64 `json:"created_on"`
 	ModifiedOn int64 `json:"modified_on"`
+	DeletedOn  gorm.DeletedAt
 }
 
-func init() {
+func Setup() {
 	var (
-		err error
-		//dbType,
+		err                                       error
 		dbName, user, password, host, tablePrefix string
 	)
-	sec, err := setting.Cig.GetSection("database")
-	if err != nil {
-		logging.Warn("Fail to get section 'databse': %v", err)
-	}
-	//dbType = sec.Key("TYPE").MustString("mysql")
-	dbName = sec.Key("NAME").MustString("blog")
-	user = sec.Key("USER").MustString("root")
-	password = sec.Key("PASSWORD").String()
-	host = sec.Key("HOST").String()
-	tablePrefix = sec.Key("TABLE_PREFIX").String()
+
+	dbName = setting.DatabaseSetting.Name
+	user = setting.DatabaseSetting.User
+	password = setting.DatabaseSetting.Password
+	host = setting.DatabaseSetting.Host
+	tablePrefix = setting.DatabaseSetting.TablePrefix
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		user,
@@ -88,6 +84,9 @@ func init() {
 	sqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	// 创建表
+	//_ = db.AutoMigrate(&Article{}, &Auth{}, &Tag{})
 }
 
 func Close() {
