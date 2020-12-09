@@ -21,7 +21,7 @@ coverage/
 .idea
 .idea/
 
-runtime/logs/
+runtime/
 
 
 npm-debug.log*

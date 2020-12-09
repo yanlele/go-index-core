@@ -20,6 +20,7 @@ func UploadImage(context *gin.Context) {
 			"message": e.GetMsg(code),
 			"data":    resData,
 		})
+		return
 	}
 	if image == nil {
 		code = e.INVALID_PARAMS

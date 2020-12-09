@@ -20,6 +20,8 @@ func InitRouter() *gin.Engine {
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	router.POST("/upload", api.UploadImage)
+
 	apiv1 := router.Group("/api/v1")
 	apiv1.Use(jwt.Jwt())
 	{
