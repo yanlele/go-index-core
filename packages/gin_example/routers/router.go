@@ -3,9 +3,11 @@ package routers
 import (
 	"gin-example/middleware/jwt"
 	"gin-example/pkg/setting"
+	"gin-example/pkg/upload"
 	"gin-example/routers/api"
 	v1 "gin-example/routers/api/v1"
 	"github.com/gin-gonic/gin"
+	"net/http"
 
 	_ "gin-example/docs"
 	"github.com/swaggo/gin-swagger"
@@ -15,6 +17,8 @@ import (
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 	gin.SetMode(setting.ServerSetting.RunMode)
+
+	router.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
 
 	router.GET("/auth", api.GetAuth)
 
