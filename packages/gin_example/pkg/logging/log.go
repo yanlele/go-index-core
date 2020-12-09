@@ -31,18 +31,21 @@ const (
 )
 
 func Setup() {
-	filePath := getLogFileFullPath()
-	// 文件写入器
-	F = openLogFile(filePath)
+	var err error
+	filePath := getLogFilePath()
+	fileName := getLogFileName()
+	F, err = openLogFile(fileName, filePath)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	writers := []io.Writer{
 		F,
-		os.Stdout, // 控制台标准写入器
+		os.Stdout,
 	}
-
 	// 多个写入器
 	fileAndStdoutWriter := io.MultiWriter(writers...)
-
 	logger = log.New(fileAndStdoutWriter, DefaultPrefix, log.LstdFlags)
 }
 

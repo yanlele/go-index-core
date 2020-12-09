@@ -13,7 +13,7 @@ func getLogFilePath() string {
 	return fmt.Sprintf("%s%s", setting.AppSetting.RuntimeRootPath, setting.AppSetting.LogSavePath)
 }
 
-func getLogFileFullPath() string {
+func getLogFileName() string {
 	return fmt.Sprintf(
 		"%s%s.%s",
 		setting.AppSetting.LogSaveName,
