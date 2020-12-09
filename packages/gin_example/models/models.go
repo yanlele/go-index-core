@@ -41,14 +41,15 @@ func Setup() {
 		user,
 		password,
 		host,
-		dbName)
+		dbName,
+	)
 
 	// 日志相关
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
 			SlowThreshold: time.Second,   // 慢 SQL 阈值
-			LogLevel:      logger.Silent, // Log level
+			LogLevel:      logger.Info, // Log level
 			Colorful:      true,          // 禁用彩色打印
 		},
 	)
