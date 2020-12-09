@@ -97,6 +97,9 @@ func AddArticle(context *gin.Context) {
 	createdBy := context.Query("created_by")
 	state := com.StrTo(context.DefaultQuery("state", "0")).MustInt()
 
+	// 封面图片， 可以非必填
+	coverImageUrl := context.Query("cover_image_url")
+
 	valid := validation.Validation{}
 	valid.Min(tagId, 1, "tag_id").Message("标签ID必须大于0")
 	valid.Required(title, "title").Message("标题不能为空")
@@ -116,6 +119,7 @@ func AddArticle(context *gin.Context) {
 			data["content"] = content
 			data["created_by"] = createdBy
 			data["state"] = state
+			data["cover_image_url"] = coverImageUrl
 
 			models.AddArticle(data)
 			code = e.SUCCESS
@@ -149,6 +153,9 @@ func EditArticle(context *gin.Context) {
 	desc := context.Query("desc")
 	content := context.Query("content")
 	modifiedBy := context.Query("modified_by")
+
+	// 封面图片， 可以非必填
+	coverImageUrl := context.Query("cover_image_url")
 
 	var state int = -1
 	if arg := context.Query("state"); arg != "" {
@@ -194,6 +201,10 @@ func EditArticle(context *gin.Context) {
 
 		if content != "" {
 			data["content"] = content
+		}
+
+		if coverImageUrl != "" {
+			data["cover_image_url"] = coverImageUrl
 		}
 
 		data["modified_by"] = modifiedBy
