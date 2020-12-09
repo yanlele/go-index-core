@@ -19,10 +19,10 @@ var db *gorm.DB
 var sqlDB *sql.DB
 
 type Model struct {
-	ID         int   `gorm:"primary_key" json:"id"`
-	CreatedOn  int64 `json:"created_on"`
-	ModifiedOn int64 `json:"modified_on"`
-	DeletedOn  gorm.DeletedAt
+	ID         int            `gorm:"primary_key" json:"id"`
+	CreatedOn  int64          `json:"created_on"`
+	ModifiedOn int64          `json:"modified_on"`
+	DeletedOn  gorm.DeletedAt `json:"deleted_on"`
 }
 
 func Setup() {

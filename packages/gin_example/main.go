@@ -12,11 +12,13 @@ import (
 	"syscall"
 )
 
-func main() {
+func init() {
 	setting.Setup()
 	models.Setup()
 	logging.Setup()
+}
 
+func main() {
 	endless.DefaultReadTimeOut = setting.ServerSetting.ReadTimeout
 	endless.DefaultWriteTimeOut = setting.ServerSetting.WriteTimeout
 	endless.DefaultMaxHeaderBytes = 1 << 20
