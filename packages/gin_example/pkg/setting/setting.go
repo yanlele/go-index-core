@@ -44,27 +44,40 @@ type Database struct {
 
 var DatabaseSetting = &Database{}
 
+type Redis struct {
+	Host        string
+	Password    string
+	MaxIdle     int
+	MaxActive   int
+	IdleTimeout time.Duration
+}
+
+var RedisSetting = &Redis{}
+
+var appConfig *ini.File
+
 func Setup() {
-	appConfig, err := ini.Load("conf/app.ini")
+	var err error
+	appConfig, err = ini.Load("conf/app.ini")
 	if err != nil {
 		log.Fatalf("加载初始化文件 'conf/app.ini' 文件失败: %v", err)
 	}
 
-	err = appConfig.Section("app").MapTo(AppSetting)
-	if err != nil {
-		log.Fatalf("config mapTo AppSetting err : %v", err)
-	}
-	AppSetting.ImageMaxSize = AppSetting.ImageMaxSize * 1024 * 1024
+	mapTo("app", AppSetting)
+	mapTo("server", ServerSetting)
+	mapTo("database", DatabaseSetting)
+	mapTo("redis", RedisSetting)
 
-	err = appConfig.Section("server").MapTo(ServerSetting)
-	if err != nil {
-		log.Fatalf("config mapTo ServerSetting err: %v", err)
-	}
+	AppSetting.ImageMaxSize = AppSetting.ImageMaxSize * 1024 * 1024
 	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
 	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
+	RedisSetting.IdleTimeout = RedisSetting.IdleTimeout * time.Second
+}
 
-	err = appConfig.Section("database").MapTo(DatabaseSetting)
+// mapTo map section
+func mapTo(section string, v interface{}) {
+	err := appConfig.Section(section).MapTo(v)
 	if err != nil {
-		log.Fatalf("config mapTo DatabaseSetting err: %v", err)
+		log.Fatalf("Cfg.MapTo %s err: %v", section, err)
 	}
 }
