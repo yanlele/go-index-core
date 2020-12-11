@@ -98,8 +98,11 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 		}
 	}
 
-	//article, err := models.GetArticles(a.PageNum, a.PageSize, )
-	return cacheArticles, nil
+	articles, err := models.GetArticles(a.PageNum, a.PageSize, a.getMaps())
+	if err != nil {
+		return nil, err
+	}
+	return articles, nil
 }
 
 func (a *Article) Delete() error {
