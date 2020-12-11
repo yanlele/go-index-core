@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -60,19 +59,16 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error
 */
 func GetArticle(id int) (Article, error) {
 	var article Article
-	err := db.Where("id = ?", id).First(&article).Error
-	fmt.Printf("error - 1: %v\n", err)
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return article, err
-	}
 
-	err = db.Model(&article).Association("tag").Find(&article.Tag)
-	fmt.Printf("error - 2: %v\n", err)
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return article, err
-	}
+	db.Where("id = ?", id).First(&article)
+	err := db.Model(&article).Association("Tag").Find(&article.Tag)
+	//if err != nil {
+	//	fmt.Printf("err: %v", err)
+	//}
 
-	return article, nil
+	//db.Where("id = ?", id).First(&article)
+	//db.Where("id = ?", article.TagID).First(&article.Tag)
+	return article, err
 }
 
 func EditArticle(id int, data interface{}) error {
