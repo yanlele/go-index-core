@@ -94,9 +94,12 @@ func AddArticle(data map[string]interface{}) error {
 	return nil
 }
 
-func DeleteArticle(id int) bool {
-	db.Where("id = ?", id).Delete(&Article{})
-	return true
+func DeleteArticle(id int) error {
+	err := db.Where("id = ?", id).Delete(&Article{}).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func CleanAllArticle() bool {

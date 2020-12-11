@@ -68,4 +68,41 @@ func (a *Article) Get() (*models.Article, error) {
 	}
 
 	article, err := models.GetArticle(a.ID)
+	if err != nil {
+		return nil, err
+	}
+	_ = gredis.Set(key, article, 3600)
+	return article, nil
 }
+
+func (a *Article) GetAll() ([]*models.Article, error) {
+	var (
+		articles, cacheArticles []*models.Article
+	)
+	cache := cache_service.Article{
+		TagID: a.TagID,
+		State: a.State,
+
+		PageNum:  a.PageNum,
+		PageSize: a.PageSize,
+	}
+
+	key := cache.GetArticlesKey()
+	if gredis.Exists(key) {
+		data, err := gredis.Get(key)
+		if err != nil {
+			logging.Info(err)
+		} else {
+			_ = json.Unmarshal(data, &cacheArticles)
+			return cacheArticles, nil
+		}
+	}
+
+	//article, err := models.GetArticles(a.PageNum, a.PageSize, )
+	return cacheArticles, nil
+}
+
+func (a *Article) Delete() error {
+	return models.DeleteArticle(a.ID)
+}
+
