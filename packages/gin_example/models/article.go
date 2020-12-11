@@ -1,7 +1,6 @@
 package models
 
 import (
-	"gin-example/pkg/logging"
 	"gorm.io/gorm"
 	"time"
 )
@@ -54,18 +53,31 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error
 
 实体关联：https://gorm.io/zh_CN/docs/associations.html
 */
-func GetArticle(id int) (article Article) {
-	db.Where("id = ?", id).First(&article)
-	_ = db.Model(&article).Association("tag").Find(&article.Tag)
-	return
+func GetArticle(id int) (*Article, error) {
+	var article Article
+	err := db.Where("id = ?", id).First(&article).Error
+
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	err = db.Model(&article).Association("tag").Find(&article.Tag)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	return &article, nil
 }
 
-func EditArticle(id int, data interface{}) bool {
-	db.Model(&Article{}).Where("id = ?", id).Updates(data)
-	return true
+func EditArticle(id int, data interface{}) error {
+	err := db.Model(&Article{}).Where("id = ?", id).Updates(data).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func AddArticle(data map[string]interface{}) bool {
+func AddArticle(data map[string]interface{}) error {
 	err := db.Create(&Article{
 		TagID:         data["tag_id"].(int),
 		Title:         data["title"].(string),
@@ -75,11 +87,11 @@ func AddArticle(data map[string]interface{}) bool {
 		State:         data["state"].(int),
 		CoverImageUrl: data["cover_image_url"].(string),
 	}).Error
+
 	if err != nil {
-		logging.Warn("create has error: %s", err.Error())
-		return false
+		return err
 	}
-	return true
+	return nil
 }
 
 func DeleteArticle(id int) bool {
