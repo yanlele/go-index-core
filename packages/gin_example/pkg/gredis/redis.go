@@ -2,6 +2,7 @@ package gredis
 
 import (
 	"encoding/json"
+	"gin-example/pkg/logging"
 	"gin-example/pkg/setting"
 	"github.com/gomodule/redigo/redis"
 	"time"
@@ -67,6 +68,7 @@ func Exists(key string) bool {
 	defer conn.Close()
 
 	exists, err := redis.Bool(conn.Do("EXISTS", key))
+	logging.Warn("error", exists, err)
 	if err != nil {
 		return false
 	}

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -57,20 +58,21 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error
 
 实体关联：https://gorm.io/zh_CN/docs/associations.html
 */
-func GetArticle(id int) (*Article, error) {
+func GetArticle(id int) (Article, error) {
 	var article Article
 	err := db.Where("id = ?", id).First(&article).Error
-
+	fmt.Printf("error - 1: %v\n", err)
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
+		return article, err
 	}
 
 	err = db.Model(&article).Association("tag").Find(&article.Tag)
+	fmt.Printf("error - 2: %v\n", err)
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
+		return article, err
 	}
 
-	return &article, nil
+	return article, nil
 }
 
 func EditArticle(id int, data interface{}) error {

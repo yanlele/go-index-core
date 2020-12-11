@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gin-example/models"
+	"gin-example/pkg/gredis"
 	"gin-example/pkg/logging"
 	"gin-example/pkg/setting"
 
@@ -16,6 +17,7 @@ func init() {
 	setting.Setup()
 	models.Setup()
 	logging.Setup()
+	_ = gredis.SetUp()
 }
 
 func main() {

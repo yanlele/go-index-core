@@ -16,7 +16,7 @@ import (
 
 /* 获取单个文章 */
 func GetArticle(context *gin.Context) {
-	appgin := app.Gin{context}
+	appGin := app.Gin{context}
 
 	id := com.StrTo(context.Param("id")).MustInt()
 	valid := validation.Validation{}
@@ -24,28 +24,28 @@ func GetArticle(context *gin.Context) {
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
-		appgin.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		appGin.Response(http.StatusOK, e.INVALID_PARAMS, nil)
 	}
 
 	articleService := article_service.Article{ID: id}
 	exists, err := articleService.ExistById()
 	if err != nil {
-		appgin.Response(http.StatusOK, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		appGin.Response(http.StatusOK, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
 		return
 	}
 
 	if !exists {
-		appgin.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
+		appGin.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
 		return
 	}
 
 	article, err := articleService.Get()
 	if err != nil {
-		appgin.Response(http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
+		appGin.Response(http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
 		return
 	}
 
-	appgin.Response(http.StatusOK, e.SUCCESS, article)
+	appGin.Response(http.StatusOK, e.SUCCESS, article)
 }
 
 func GetArticles(context *gin.Context) {
