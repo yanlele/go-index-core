@@ -2,6 +2,7 @@ package v1
 
 import (
 	"gin-example/models"
+	"gin-example/pkg/app"
 	"gin-example/pkg/e"
 	"gin-example/pkg/logging"
 	"gin-example/pkg/setting"
@@ -14,9 +15,16 @@ import (
 
 /* 获取单个文章 */
 func GetArticle(context *gin.Context) {
+	appG := app.Gin{context}
+
 	id := com.StrTo(context.Param("id")).MustInt()
 	valid := validation.Validation{}
 	valid.Min(id, 1, "id").Message("id 必须大于 0")
+
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+	}
 
 	code := e.INVALID_PARAMS
 	var data interface{}
