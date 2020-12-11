@@ -37,7 +37,7 @@ func ExistArticleByID(id int) (bool, error) {
 func GetArticleTotal(maps interface{}) (int64, error) {
 	var count int64
 	if err := db.Model(&Article{}).Where(maps).Count(&count).Error; err != nil {
-		return count, err
+		return 0, err
 	}
 	return count, nil
 }

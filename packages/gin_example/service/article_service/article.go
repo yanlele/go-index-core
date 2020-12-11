@@ -110,4 +110,20 @@ func (a *Article) ExistById() (bool, error) {
 	return models.ExistArticleByID(a.ID)
 }
 
+func (a *Article) Count() (int64, error) {
+	return models.GetArticleTotal(a.getMaps())
+}
 
+func (a *Article) getMaps() map[string]interface{} {
+	maps := make(map[string]interface{})
+	maps["deleted_on"] = nil
+	if a.State != -1 {
+		maps["state"] = a.State
+	}
+
+	if a.TagID != -1 {
+		maps["tag_id"] = a.TagID
+	}
+
+	return maps
+}
