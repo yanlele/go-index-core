@@ -7,6 +7,7 @@ import (
 	"gin-example/pkg/logging"
 	"gin-example/pkg/setting"
 	"gin-example/pkg/util"
+	"gin-example/service/article_service"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
@@ -15,7 +16,7 @@ import (
 
 /* 获取单个文章 */
 func GetArticle(context *gin.Context) {
-	appG := app.Gin{context}
+	appgin := app.Gin{context}
 
 	id := com.StrTo(context.Param("id")).MustInt()
 	valid := validation.Validation{}
@@ -23,29 +24,28 @@ func GetArticle(context *gin.Context) {
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
-		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		appgin.Response(http.StatusOK, e.INVALID_PARAMS, nil)
 	}
 
-	code := e.INVALID_PARAMS
-	var data interface{}
-	if !valid.HasErrors() {
-		if models.ExistArticleByID(id) {
-			data = models.GetArticle(id)
-			code = e.SUCCESS
-		} else {
-			code = e.ERROR_NOT_EXIST_ARTICLE
-		}
-	} else {
-		for _, err := range valid.Errors {
-			logging.Info("err.key: %s, err.message: %s\n", err.Key, err.Message)
-		}
+	articleService := article_service.Article{ID: id}
+	exists, err := articleService.ExistById()
+	if err != nil {
+		appgin.Response(http.StatusOK, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"code":    code,
-		"message": e.GetMsg(code),
-		"data":    data,
-	})
+	if !exists {
+		appgin.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
+		return
+	}
+
+	article, err := articleService.Get()
+	if err != nil {
+		appgin.Response(http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
+		return
+	}
+
+	appgin.Response(http.StatusOK, e.SUCCESS, article)
 }
 
 func GetArticles(context *gin.Context) {
@@ -193,7 +193,9 @@ func EditArticle(context *gin.Context) {
 		return
 	}
 
-	if models.ExistArticleByID(id) && models.ExistTagById(tagId) {
+	existsArticle, _ := models.ExistArticleByID(id)
+
+	if existsArticle && models.ExistTagById(tagId) {
 		data := make(map[string]interface{})
 		if tagId > 0 {
 			data["tag_id"] = tagId
@@ -245,8 +247,9 @@ func DeleteArticle(context *gin.Context) {
 		return
 	}
 
-	if models.ExistArticleByID(id) {
-		models.DeleteArticle(id)
+	existsArticle, _ := models.ExistArticleByID(id)
+	if existsArticle {
+		_ = models.DeleteArticle(id)
 		code = e.SUCCESS
 	} else {
 		code = e.ERROR_NOT_EXIST_ARTICLE
