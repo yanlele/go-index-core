@@ -106,3 +106,8 @@ func (a *Article) Delete() error {
 	return models.DeleteArticle(a.ID)
 }
 
+func (a *Article) ExistById() (bool, error) {
+	return models.ExistArticleByID(a.ID)
+}
+
+

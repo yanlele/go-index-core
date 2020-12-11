@@ -20,13 +20,17 @@ type Article struct {
 }
 
 /* 通过 id 判定是否存在 */
-func ExistArticleByID(id int) bool {
+func ExistArticleByID(id int) (bool, error) {
 	var article Article
-	db.Select("id").Where("id = ?", id).First(&article)
-	if article.ID > 0 {
-		return true
+	err := db.Select("id").Where("id = ?", id).First(&article).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return false, err
 	}
-	return false
+
+	if article.ID > 0 {
+		return true, nil
+	}
+	return false, nil
 }
 
 /* 获取文章总数 */
