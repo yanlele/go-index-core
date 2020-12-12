@@ -58,13 +58,16 @@ func AddTag(name string, state int, createdBy string) bool {
 }
 
 // 通过 id 判定是否存在tag
-func ExistTagById(id int) bool {
+func ExistTagById(id int) (bool, error) {
 	var tag Tag
-	db.Select("id").Where("id = ?", id).First(&tag)
-	if tag.ID > 0 {
-		return true
+	err := db.Select("id").Where("id = ?", id).First(&tag).Error
+	if err != nil {
+		return false, err
 	}
-	return false
+	if tag.ID > 0 {
+		return true, nil
+	}
+	return false, nil
 }
 
 // 通过 id 删除 tag

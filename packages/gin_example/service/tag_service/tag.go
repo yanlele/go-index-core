@@ -17,4 +17,8 @@ func (t *Tag) ExistByName() (bool, error) {
 	return models.ExistTagByName(t.Name)
 }
 
+func (t *Tag) ExistById() (bool, error) {
+	return models.ExistTagById(t.ID)
+}
+
 

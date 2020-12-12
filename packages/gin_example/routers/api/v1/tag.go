@@ -118,7 +118,7 @@ func EditTag(context *gin.Context) {
 	if !valid.HasErrors() {
 		code = e.SUCCESS
 		// 判定是否有这个 tag 存在
-		if models.ExistTagById(id) {
+		if exist, _ := models.ExistTagById(id); exist {
 			data := make(map[string]interface{})
 			data["modified_by"] = modifiedBy
 			if name != "" {
@@ -158,7 +158,7 @@ func DeleteTag(context *gin.Context) {
 
 	if !valid.HasErrors() {
 		code = e.SUCCESS
-		if models.ExistTagById(id) {
+		if exist, _ := models.ExistTagById(id); exist {
 			models.DeleteTag(id)
 		} else {
 			code = e.ERROR_NOT_EXIST_TAG
