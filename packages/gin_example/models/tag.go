@@ -22,8 +22,8 @@ func GetTags(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
 }
 
 // 获取标签总数
-func GetTagTotal(maps interface{}) (count int64) {
-	db.Model(&Tag{}).Where(maps).Count(&count)
+func GetTagTotal(maps interface{}) (count int64, err error) {
+	err = db.Model(&Tag{}).Where(maps).Count(&count).Error
 	return
 }
 
@@ -69,11 +69,11 @@ func ExistTagById(id int) (bool, error) {
 }
 
 // 通过 id 删除 tag
-func DeleteTag(id int) bool {
-	if db.Where("id = ?", id).Delete(&Tag{}).Error != nil {
-		return true
+func DeleteTag(id int) error {
+	if err := db.Where("id = ?", id).Delete(&Tag{}).Error; err != nil {
+		return err
 	}
-	return false
+	return nil
 }
 
 // 通过 id 编辑 tag

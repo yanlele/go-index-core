@@ -35,6 +35,23 @@ func (t *Tag) Edit() error {
 	return models.EditTag(t.ID, data)
 }
 
+func (t *Tag) Delete() error {
+	return models.DeleteTag(t.ID)
+}
 
+func (t *Tag) Count() (int64, error) {
+	return models.GetTagTotal(t.getMaps())
+}
 
+func (t *Tag) getMaps() map[string]interface{} {
+	maps := make(map[string]interface{})
+	if t.Name != "" {
+		maps["name"] = t.Name
+	}
 
+	if t.State > 0 {
+		maps["state"] = t.State
+	}
+
+	return maps
+}

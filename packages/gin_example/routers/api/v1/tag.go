@@ -35,7 +35,7 @@ func GetTags(context *gin.Context) {
 	data["lists"] = models.GetTags(util.GetPage(context), setting.AppSetting.PageSize, maps)
 
 	// 获取总数
-	data["total"] = models.GetTagTotal(maps)
+	data["total"], _ = models.GetTagTotal(maps)
 
 	context.JSON(http.StatusOK, gin.H{
 		"code":    code,
@@ -159,7 +159,7 @@ func DeleteTag(context *gin.Context) {
 	if !valid.HasErrors() {
 		code = e.SUCCESS
 		if exist, _ := models.ExistTagById(id); exist {
-			models.DeleteTag(id)
+			_ = models.DeleteTag(id)
 		} else {
 			code = e.ERROR_NOT_EXIST_TAG
 		}
