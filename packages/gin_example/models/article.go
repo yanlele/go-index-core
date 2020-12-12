@@ -73,6 +73,9 @@ func GetArticle(id int) (*Article, error) {
 	// 方式二 分别写两个sql 就完事儿
 	//db.Where("id = ?", id).First(&article)
 	//db.Where("id = ?", article.TagID).First(&article.Tag)
+
+	// 方式三
+	//err := db.Preload("Tag").Where("id = ?", id).Find(&article).Error
 	return &article, err
 }
 
