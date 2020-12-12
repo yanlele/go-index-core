@@ -127,7 +127,7 @@ func EditTag(context *gin.Context) {
 			if state != -1 {
 				data["state"] = state
 			}
-			models.EditTag(id, data)
+			_ = models.EditTag(id, data)
 		} else {
 			code = e.ERROR_NOT_EXIST_TAG
 		}

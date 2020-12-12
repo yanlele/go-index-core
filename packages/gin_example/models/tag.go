@@ -77,11 +77,11 @@ func DeleteTag(id int) bool {
 }
 
 // 通过 id 编辑 tag
-func EditTag(id int, data map[string]interface{}) bool {
-	if db.Model(&Tag{}).Where("id = ?", id).Updates(data).Error != nil {
-		return true
+func EditTag(id int, data map[string]interface{}) error {
+	if err := db.Model(&Tag{}).Where("id = ?", id).Updates(data).Error; err != nil {
+		return err
 	}
-	return false
+	return nil
 }
 
 func FindOneTag(id int) (tag Tag, err error) {
