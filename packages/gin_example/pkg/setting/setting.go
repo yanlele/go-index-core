@@ -10,11 +10,13 @@ type App struct {
 	JwtSecret       string
 	PageSize        int
 	RuntimeRootPath string
+	PrefixUrl       string
 
-	ImagePrefixUrl string
 	ImageSavePath  string
 	ImageMaxSize   int
 	ImageAllowExts []string
+
+	ExportSavePath string
 
 	LogSavePath string
 	LogSaveName string
