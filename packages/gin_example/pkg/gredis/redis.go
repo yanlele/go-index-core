@@ -68,8 +68,8 @@ func Exists(key string) bool {
 	defer conn.Close()
 
 	exists, err := redis.Bool(conn.Do("EXISTS", key))
-	logging.Warn("error", exists, err)
 	if err != nil {
+		logging.Warn("error", exists, err)
 		return false
 	}
 	return exists

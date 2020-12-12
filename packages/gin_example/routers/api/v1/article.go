@@ -16,7 +16,7 @@ import (
 
 /* 获取单个文章 */
 func GetArticle(context *gin.Context) {
-	appGin := app.Gin{context}
+	appGin := app.Gin{C: context}
 
 	id := com.StrTo(context.Param("id")).MustInt()
 	valid := validation.Validation{}
