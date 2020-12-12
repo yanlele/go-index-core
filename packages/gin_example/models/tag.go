@@ -29,13 +29,16 @@ func GetTagTotal(maps interface{}) (count int64) {
 }
 
 // 标签是否存在
-func ExistTagByName(name string) bool {
+func ExistTagByName(name string) (bool, error) {
 	var tag Tag
-	db.Select("id").Where("name = ?", name).First(&tag)
-	if tag.ID > 0 {
-		return true
+	err := db.Select("id").Where("name = ?", name).First(&tag).Error
+	if err != nil {
+		return false, err
 	}
-	return false
+	if tag.ID > 0 {
+		return true, nil
+	}
+	return false, nil
 }
 
 // 添加标签
@@ -83,7 +86,7 @@ func EditTag(id int, data map[string]interface{}) bool {
 func FindOneTag(id int) (tag Tag, err error) {
 	err = db.Where("id = ?", id).Find(&tag).Error
 	if tag.ID == 0 {
-		return tag , errors.New("tag is not exist")
+		return tag, errors.New("tag is not exist")
 	}
 	if err != nil {
 		return tag, err
@@ -95,6 +98,7 @@ func CleanAllTag() bool {
 	db.Unscoped().Where("deleted_on != ?", 0).Delete(&Tag{})
 	return true
 }
+
 /*
 gorm所支持的回调方法：
 	创建：BeforeSave、BeforeCreate、AfterCreate、AfterSave
