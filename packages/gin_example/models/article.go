@@ -57,18 +57,23 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error
 
 实体关联：https://gorm.io/zh_CN/docs/associations.html
 */
-func GetArticle(id int) (Article, error) {
+func GetArticle(id int) (*Article, error) {
 	var article Article
 
-	db.Where("id = ?", id).First(&article)
-	err := db.Model(&article).Association("Tag").Find(&article.Tag)
-	//if err != nil {
-	//	fmt.Printf("err: %v", err)
-	//}
+	// 方式一 关联查询
+	err := db.Where("id = ?", id).First(&article).Error
+	if err != nil {
+		return nil, err
+	}
+	err = db.Model(&article).Association("Tag").Find(&article.Tag)
+	if err != nil {
+		return nil, err
+	}
 
+	// 方式二 分别写两个sql 就完事儿
 	//db.Where("id = ?", id).First(&article)
 	//db.Where("id = ?", article.TagID).First(&article.Tag)
-	return article, err
+	return &article, err
 }
 
 func EditArticle(id int, data interface{}) error {

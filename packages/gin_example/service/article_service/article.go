@@ -52,7 +52,7 @@ func (a *Article) Edit() error {
 	})
 }
 
-func (a *Article) Get() (models.Article, error) {
+func (a *Article) Get() (*models.Article, error) {
 	//var cacheArticle models.Article
 	cache := cache_service.Article{ID: a.ID}
 	key := cache.GetArticleKey()
