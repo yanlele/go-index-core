@@ -32,7 +32,7 @@ func GetTags(context *gin.Context) {
 	code := e.SUCCESS
 
 	// 分页处理
-	data["lists"] = models.GetTags(util.GetPage(context), setting.AppSetting.PageSize, maps)
+	data["lists"], _ = models.GetTags(util.GetPage(context), setting.AppSetting.PageSize, maps)
 
 	// 获取总数
 	data["total"], _ = models.GetTagTotal(maps)

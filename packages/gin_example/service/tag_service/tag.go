@@ -1,6 +1,12 @@
 package tag_service
 
-import "gin-example/models"
+import (
+	"encoding/json"
+	"gin-example/models"
+	"gin-example/pkg/gredis"
+	"gin-example/pkg/logging"
+	"gin-example/service/cache_service"
+)
 
 type Tag struct {
 	ID         int
@@ -41,6 +47,35 @@ func (t *Tag) Delete() error {
 
 func (t *Tag) Count() (int64, error) {
 	return models.GetTagTotal(t.getMaps())
+}
+
+func (t *Tag) GetAll() ([]models.Tag, error) {
+	var (
+		tags, cacheTags []models.Tag
+	)
+
+	cache := cache_service.Tag{
+		State:    t.State,
+		PageNum:  t.PageNum,
+		PageSize: t.PageSize,
+	}
+
+	key := cache.GetTagsKey()
+
+	if gredis.Exists(key) {
+		data, err := gredis.Get(key)
+		if err != nil {
+			logging.Warn(err)
+		} else {
+			_ = json.Unmarshal(data, &cacheTags)
+			return cacheTags, nil
+		}
+	}
+	tags, err := models.GetTags(t.PageNum, t.PageSize, t.getMaps())
+	if err != nil {
+		return nil, err
+	}
+	return tags, err
 }
 
 func (t *Tag) getMaps() map[string]interface{} {

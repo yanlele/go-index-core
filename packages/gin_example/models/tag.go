@@ -16,8 +16,8 @@ type Tag struct {
 }
 
 // 获取标签
-func GetTags(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
-	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags)
+func GetTags(pageNum int, pageSize int, maps interface{}) (tags []Tag, err error) {
+	err = db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags).Error
 	return
 }
 
