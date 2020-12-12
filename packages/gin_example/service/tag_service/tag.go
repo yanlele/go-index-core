@@ -21,4 +21,10 @@ func (t *Tag) ExistById() (bool, error) {
 	return models.ExistTagById(t.ID)
 }
 
+func (t *Tag) Add() error {
+	return models.AddTag(t.Name, t.State, t.CreatedBy)
+}
+
+
+
 

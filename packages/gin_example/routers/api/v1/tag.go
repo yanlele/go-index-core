@@ -68,7 +68,7 @@ func AddTag(context *gin.Context) {
 	if !valid.HasErrors() {
 		if exist, _ := models.ExistTagByName(name); !exist {
 			code = e.SUCCESS
-			models.AddTag(name, state, createdBy)
+			_ = models.AddTag(name, state, createdBy)
 		} else {
 			code = e.ERROR_EXIST_TAG
 		}

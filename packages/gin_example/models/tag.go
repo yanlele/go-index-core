@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"gin-example/pkg/logging"
 	"gorm.io/gorm"
 	"time"
@@ -42,19 +41,18 @@ func ExistTagByName(name string) (bool, error) {
 }
 
 // 添加标签
-func AddTag(name string, state int, createdBy string) bool {
-	dbResult := db.Create(&Tag{
+func AddTag(name string, state int, createdBy string) error {
+	err := db.Create(&Tag{
 		Name:      name,
 		State:     state,
 		CreatedBy: createdBy,
-	})
-	fmt.Println("error ", dbResult.Error)
+	}).Error
 
-	if dbResult.Error != nil {
-		logging.Fatal("has error: %v", dbResult.Error)
-		return false
+	if err != nil {
+		logging.Warn("has error: %v", err)
+		return err
 	}
-	return true
+	return nil
 }
 
 // 通过 id 判定是否存在tag
