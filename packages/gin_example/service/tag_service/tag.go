@@ -78,6 +78,15 @@ func (t *Tag) GetAll() ([]models.Tag, error) {
 	return tags, err
 }
 
+//func (t *Tag) Export() (string, error) {
+//	tags, err := t.GetAll()
+//	if err != nil {
+//		return "", err
+//	}
+//
+//	xlsFile:=
+//}
+
 func (t *Tag) getMaps() map[string]interface{} {
 	maps := make(map[string]interface{})
 	if t.Name != "" {
