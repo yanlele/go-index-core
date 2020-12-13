@@ -8,8 +8,10 @@ import (
 	"gin-example/pkg/gredis"
 	"gin-example/pkg/logging"
 	"gin-example/service/cache_service"
+	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/tealeg/xlsx"
 	"github.com/unknwon/com"
+	"io"
 	"strconv"
 	"time"
 )
@@ -122,8 +124,8 @@ func (t *Tag) Export() (string, error) {
 		}
 	}
 
-	time := strconv.Itoa(int(time.Now().Unix()))
-	filename := "tags-" + time + export.EXT
+	exportTime := strconv.Itoa(int(time.Now().Unix()))
+	filename := "tags-" + exportTime + export.EXT
 
 	dirFullPath := export.GetExcelFullPath()
 	err = file.IsNotExistMkDir(dirFullPath)
@@ -137,6 +139,28 @@ func (t *Tag) Export() (string, error) {
 	}
 
 	return filename, nil
+}
+
+func (t *Tag) Import(r io.Reader) ([][]string, error) {
+	xlsxFile, err := excelize.OpenReader(r)
+	if err != nil {
+		return [][]string{}, nil
+	}
+
+	rows := xlsxFile.GetRows("标签信息")
+	var data [][]string
+	for index, row := range rows {
+		if index > 0 {
+			var itemData []string;
+			for _, cell := range row {
+				itemData = append(itemData, cell)
+			}
+			//_ = models.AddTag(data[1], 1, data[2])
+			logging.Info("import data:", data)
+			data = append(data, itemData)
+		}
+	}
+	return data, nil
 }
 
 func (t *Tag) getMaps() map[string]interface{} {

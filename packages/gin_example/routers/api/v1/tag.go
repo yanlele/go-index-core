@@ -230,3 +230,23 @@ func ExportTag(c *gin.Context) {
 		"export_save_url": export.GetExcelPath() + filename,
 	})
 }
+
+func ImportTag(c *gin.Context) {
+	appGin := app.Gin{C: c}
+	file, _, err := c.Request.FormFile("file")
+	if err != nil {
+		logging.Warn("err")
+		appGin.Response(http.StatusOK, e.ERROR, nil)
+		return
+	}
+
+	tagService := tag_service.Tag{}
+	var data [][]string
+	data, err = tagService.Import(file)
+	if err != nil {
+		logging.Warn(err)
+		appGin.Response(http.StatusOK, e.ERROR_IMPORT_TAG_FAIL, nil)
+		return
+	}
+	appGin.Response(http.StatusOK, e.SUCCESS, data)
+}

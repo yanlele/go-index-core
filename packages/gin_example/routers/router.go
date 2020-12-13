@@ -43,6 +43,8 @@ func InitRouter() *gin.Engine {
 		apiv1.GET("/tags/:id", v1.GetOneTag)
 		// 到处标签
 		apiv1.POST("/tags/export", v1.ExportTag)
+		// 导入文件
+		apiv1.POST("/tags/import", v1.ImportTag)
 
 		//获取文章列表
 		apiv1.GET("/articles", v1.GetArticles)
