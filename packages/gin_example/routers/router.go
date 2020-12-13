@@ -2,6 +2,7 @@ package routers
 
 import (
 	"gin-example/middleware/jwt"
+	"gin-example/pkg/export"
 	"gin-example/pkg/setting"
 	"gin-example/pkg/upload"
 	"gin-example/routers/api"
@@ -19,6 +20,7 @@ func InitRouter() *gin.Engine {
 	gin.SetMode(setting.ServerSetting.RunMode)
 
 	router.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+	router.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
 
 	router.GET("/auth", api.GetAuth)
 
@@ -39,6 +41,8 @@ func InitRouter() *gin.Engine {
 		apiv1.DELETE("/tags/:id", v1.DeleteTag)
 		// 获取指定id
 		apiv1.GET("/tags/:id", v1.GetOneTag)
+		// 到处标签
+		apiv1.POST("/tags/export", v1.ExportTag)
 
 		//获取文章列表
 		apiv1.GET("/articles", v1.GetArticles)

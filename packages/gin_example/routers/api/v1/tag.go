@@ -2,10 +2,13 @@ package v1
 
 import (
 	"gin-example/models"
+	"gin-example/pkg/app"
 	"gin-example/pkg/e"
+	"gin-example/pkg/export"
 	"gin-example/pkg/logging"
 	"gin-example/pkg/setting"
 	"gin-example/pkg/util"
+	"gin-example/service/tag_service"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
@@ -200,5 +203,30 @@ func GetOneTag(context *gin.Context) {
 		"code":    code,
 		"message": e.GetMsg(code),
 		"data":    tag,
+	})
+}
+
+func ExportTag(c *gin.Context) {
+	appGin := app.Gin{C: c}
+	name := c.PostForm("name")
+	state := -1
+	if arg := c.PostForm("state"); arg != "" {
+		state = com.StrTo(arg).MustInt()
+	}
+
+	tagService := tag_service.Tag{
+		Name:  name,
+		State: state,
+	}
+
+	filename, err := tagService.Export()
+	if err != nil {
+		appGin.Response(http.StatusOK, e.ERROR_EXPORT_TAG_FAIL, nil)
+		return
+	}
+
+	appGin.Response(http.StatusOK, e.SUCCESS, map[string]string{
+		"export_url":      export.GetExcelFullUrl(filename),
+		"export_save_url": export.GetExcelPath() + filename,
 	})
 }

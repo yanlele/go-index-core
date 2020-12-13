@@ -22,7 +22,7 @@ require (
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
 	github.com/swaggo/gin-swagger v1.3.0
 	github.com/swaggo/swag v1.6.9
-	github.com/tealeg/xlsx v1.0.5 // indirect
+	github.com/tealeg/xlsx v1.0.5
 	github.com/tidwall/gjson v1.6.3
 	github.com/tidwall/match v1.0.2 // indirect
 	github.com/ugorji/go v1.2.1 // indirect
