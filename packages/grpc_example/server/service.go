@@ -16,6 +16,7 @@ func (s *SearchService) Search(ctx context.Context, r *proto.SearchRequest) (*pr
 
 const PORT = "9001"
 
+// 一个最简单的demo
 func main() {
 	server := grpc.NewServer()
 	proto.RegisterSearchServiceServer(server, &SearchService{})
@@ -25,5 +26,5 @@ func main() {
 		log.Fatalf("net.Listen err: %v", err)
 	}
 
-	server.Serve(lis)
+	_ = server.Serve(lis)
 }

@@ -10,6 +10,7 @@ import (
 
 const PORT = "9001"
 
+// 一个最简单的demo
 func main() {
 	conn, err := grpc.Dial(fmt.Sprintf(":%s", PORT), grpc.WithInsecure())
 	if err != nil {
