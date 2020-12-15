@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
 	pb "gin-example/proto"
+	"google.golang.org/grpc"
 	"io"
 	"log"
+	"net"
 )
 
 type StreamService struct {
@@ -12,7 +15,14 @@ type StreamService struct {
 const PORT = "9002"
 
 func main() {
+	server := grpc.NewServer()
+	pb.RegisterStreamServiceServer(server, &StreamService{})
 
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", PORT))
+	if err != nil {
+		log.Fatalf("net.Listen err: %v", err)
+	}
+	_ = server.Serve(lis)
 }
 
 func (s *StreamService) List(r *pb.StreamRequest, stream pb.StreamService_ListServer) error {
@@ -53,7 +63,7 @@ func (s *StreamService) Record(stream pb.StreamService_RecordServer) error {
 func (s *StreamService) Route(stream pb.StreamService_RouteServer) error {
 	n := 0
 	for {
-		err:= stream.Send(&pb.StreamResponse{
+		err := stream.Send(&pb.StreamResponse{
 			Pt: &pb.StreamPoint{
 				Name:  "gPRC Stream Client: Route",
 				Value: int32(n),
@@ -63,7 +73,7 @@ func (s *StreamService) Route(stream pb.StreamService_RouteServer) error {
 			return err
 		}
 
-		r, err:= stream.Recv()
+		r, err := stream.Recv()
 		if err == io.EOF {
 			return nil
 		}
