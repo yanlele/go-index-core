@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"le-blog/routers"
 )
 
 const CookieSessionKey = "blog_session"
@@ -18,6 +19,7 @@ func Init() *gin.Engine {
 	store := cookie.NewStore([]byte("secret"))
 	app.Use(sessions.Sessions(CookieSessionKey, store))
 
+	routers.Api(app)
 
 	return app
 }
