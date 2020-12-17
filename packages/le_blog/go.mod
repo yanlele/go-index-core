@@ -3,8 +3,8 @@ module le-blog
 go 1.15
 
 require (
-	github.com/gin-contrib/sessions v0.0.3 // indirect
-	github.com/gin-gonic/gin v1.6.3 // indirect
+	github.com/gin-contrib/sessions v0.0.3
+	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
@@ -21,8 +21,8 @@ require (
 	golang.org/x/sys v0.0.0-20201214210602-f9fddec55a1e // indirect
 	golang.org/x/tools v0.0.0-20201215192005-fa10ef0b8743 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
-	gopkg.in/ini.v1 v1.62.0 // indirect
+	gopkg.in/ini.v1 v1.62.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/driver/mysql v1.0.3 // indirect
-	gorm.io/gorm v1.20.8 // indirect
+	gorm.io/driver/mysql v1.0.3
+	gorm.io/gorm v1.20.8
 )
