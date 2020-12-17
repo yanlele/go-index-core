@@ -37,7 +37,8 @@ func Setup() {
 	host = setting.DatabaseSetting.Host
 	tablePrefix = setting.DatabaseSetting.TablePrefix
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		user,
 		password,
 		host,
@@ -48,9 +49,9 @@ func Setup() {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
-			SlowThreshold: time.Second,   // 慢 SQL 阈值
+			SlowThreshold: time.Second, // 慢 SQL 阈值
 			LogLevel:      logger.Info, // Log level
-			Colorful:      true,          // 禁用彩色打印
+			Colorful:      true,        // 禁用彩色打印
 		},
 	)
 
