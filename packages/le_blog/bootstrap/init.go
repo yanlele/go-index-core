@@ -44,6 +44,7 @@ func Init() *gin.Engine {
 	})
 
 	routers.Api(app)
+	routers.Home(app)
 
 	return app
 }
