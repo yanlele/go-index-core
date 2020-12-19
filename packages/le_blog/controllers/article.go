@@ -64,5 +64,55 @@ func SaveArticle(c *gin.Context) {
 	auth := Auth{}.GetAuth(c)
 
 	// 计算文章简介
+	introduction := utils.Html2Str(data.EditorHtmlCode)
 
+	if len(introduction) > 100 {
+		introduction = string(([]rune(introduction))[:100])
+	} else {
+		introduction = string(([]rune(introduction))[:len(introduction)])
+	}
+
+	article := modules.Article{
+		Title:         data.Title,
+		Introduction:  introduction,
+		ContentMd:     data.Content,
+		UserID:        auth.Id,
+		Tags:          data.Tags,
+		ContentHtml:   data.EditorHtmlCode,
+		DirectoryHtml: data.DirectoryHtml,
+	}
+
+	var err error
+	if data.Id == 0 {
+		// 保存数据
+		err = driver.DB.Create(&article).Error
+
+		// todo 启动协程
+	} else {
+		article.ID = uint(data.Id)
+		// 更新数据
+		err = driver.DB.Save(&article).Error
+	}
+
+	if err != nil {
+		response := utils.Response{
+			Status: 500,
+			Data: nil,
+			Msg: err.Error(),
+		}
+
+		c.JSON(http.StatusOK, response.FailResponse())
+		return
+	}
+
+	// todo 处理文章的tags , 启动协程
+
+	response:= utils.Response{
+		Status: 0,
+		Data: article,
+		Msg: "",
+	}
+
+	c.JSON(http.StatusOK, response.SuccessResponse())
+	return
 }
