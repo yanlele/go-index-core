@@ -30,6 +30,11 @@ func Init() *gin.Engine {
 		"socialHtml":	utils.SocialHtml,
 	})
 
+	// 设置模板解析路径
+	app.LoadHTMLGlob("./views/**/*")
+	// 设置静态文件
+	app.Static("/static", "./static")
+
 	routers.Api(app)
 
 	return app
