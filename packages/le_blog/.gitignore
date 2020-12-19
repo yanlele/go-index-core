@@ -13,6 +13,8 @@ coverage/
 /build
 /coverage
 /static/
+/views/
+
 
 # misc
 .DS_Store
