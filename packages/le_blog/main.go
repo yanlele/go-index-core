@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
 	"le-blog/bootstrap"
 	"le-blog/bootstrap/driver"
 	"le-blog/config"
@@ -23,7 +24,13 @@ func main() {
 		panic(err)
 	}
 
+	mode, err := env.GetKey("Mode")
+	if err != nil {
+		panic(err)
+	}
+
 	gin.ForceConsoleColor()
+	gin.SetMode(fmt.Sprintf("%s", mode))
 	app = bootstrap.Init()
 
 	log.Fatal(app.Run(fmt.Sprintf(":%s", port)))
