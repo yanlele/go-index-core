@@ -15,7 +15,8 @@ func Home(r *gin.Engine) {
 		article := home.Group("/article", middleware.Authorization)
 		{
 			//article.GET("/user", controllers.)
-			article.GET("/user")
+			article.GET("/user", controllers.UserArticleList)
+
 		}
 	}
 }

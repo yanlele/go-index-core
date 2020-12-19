@@ -36,3 +36,20 @@ func UserArticleList(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "list", data)
 }
+
+// 创建文章页面
+func CreateArticle(c *gin.Context) {
+	auth := Auth{}.GetAuth(c)
+	data := struct {
+		Auth
+	}{auth}
+	c.HTML(http.StatusOK, "create-article", data)
+}
+
+// 保存文章接口
+func SaveArticle(c *gin.Context) {
+	var data postArticle
+	if err := c.ShouldBind(&data); err != nil {
+
+	}
+}
