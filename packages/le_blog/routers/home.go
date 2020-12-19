@@ -1,10 +1,14 @@
 package routers
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"le-blog/controllers"
+)
 
 func Home(r *gin.Engine) {
 	home := r.Group("/")
 	{
-		home.GET("/")
+		// 首页
+		home.GET("/", controllers.Index)
 	}
 }

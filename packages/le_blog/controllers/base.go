@@ -21,3 +21,7 @@ func (a Auth) GetAuth(c *gin.Context) Auth {
 	}
 	return auth.(Auth)
 }
+
+type Header struct {
+	Title string
+}
