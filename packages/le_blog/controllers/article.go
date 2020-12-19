@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"le-blog/bootstrap/driver"
 	"le-blog/modules"
+	"le-blog/utils"
 	"net/http"
 )
 
@@ -50,6 +51,18 @@ func CreateArticle(c *gin.Context) {
 func SaveArticle(c *gin.Context) {
 	var data postArticle
 	if err := c.ShouldBind(&data); err != nil {
+		response := utils.Response{
+			Status: 403,
+			Data:   nil,
+			Msg:    err.Error(),
+		}
 
+		c.JSON(http.StatusBadRequest, response.FailResponse())
+		return
 	}
+
+	auth := Auth{}.GetAuth(c)
+
+	// 计算文章简介
+
 }
