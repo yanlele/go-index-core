@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"le-blog/bootstrap/driver"
 	"le-blog/modules"
+	"le-blog/services"
 	"le-blog/utils"
 	"net/http"
 )
@@ -88,6 +89,7 @@ func SaveArticle(c *gin.Context) {
 		err = driver.DB.Create(&article).Error
 
 		// todo 启动协程
+		go services.SetArticleArchive(&article)
 	} else {
 		article.ID = uint(data.Id)
 		// 更新数据
@@ -97,8 +99,8 @@ func SaveArticle(c *gin.Context) {
 	if err != nil {
 		response := utils.Response{
 			Status: 500,
-			Data: nil,
-			Msg: err.Error(),
+			Data:   nil,
+			Msg:    err.Error(),
 		}
 
 		c.JSON(http.StatusOK, response.FailResponse())
@@ -106,11 +108,12 @@ func SaveArticle(c *gin.Context) {
 	}
 
 	// todo 处理文章的tags , 启动协程
+	go services.HandleTags(data.Tags)
 
-	response:= utils.Response{
+	response := utils.Response{
 		Status: 0,
-		Data: article,
-		Msg: "",
+		Data:   article,
+		Msg:    "",
 	}
 
 	c.JSON(http.StatusOK, response.SuccessResponse())
