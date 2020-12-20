@@ -5,6 +5,8 @@ import (
 	"le-blog/bootstrap/driver"
 	"le-blog/modules"
 	"log"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -31,5 +33,24 @@ func SetArticleArchive(article *modules.Article) {
 		return
 	}
 
+	ids := archive.ArticleIds
+	idsSlice := strings.Split(ids, ",")
+	hasTheId := false
+	for _, id := range idsSlice {
+		nId, _ := strconv.Atoi(id)
+		if uint(nId) == article.ID {
+			hasTheId = true
+			return
+		}
+	}
 
+	if !hasTheId {
+		idsSlice = append(idsSlice, strconv.Itoa(int(article.ID)))
+	}
+
+	archive.ArticleIds = strings.Join(idsSlice, ",")
+	err = driver.DB.Save(&archive).Error
+	if err != nil {
+		log.Println(err)
+	}
 }
