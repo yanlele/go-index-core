@@ -1,66 +1,35 @@
 package services
 
 import (
-	"gorm.io/gorm"
+	"fmt"
 	"le-blog/bootstrap/driver"
 	"le-blog/modules"
 	"log"
-	"strings"
+	"time"
 )
 
-// handleTags 处理文章的tags
-func HandleTags(tag string) bool {
-	var tagSlice []string
-	tagSlice = strings.Split(tag, ",")
-	var tags []modules.Tag
-	err := driver.DB.Where("name in (?)", tagSlice).Find(&tag).Error
+// insertArchive 将发布的文章归档
+func SetArticleArchive(article *modules.Article) {
+	var archive modules.Archive
+	layout := "2006-01-02 03:04:05"
+
+	archiveDateParse, err := time.Parse(layout, article.CreatedAt.Format(layout))
 	if err != nil {
-		log.Println(err)
-		return false
+		return
 	}
 
-	tagMap := make(map[string]string)
-
-	for _, ts := range tagSlice {
-		tagMap[ts] = ts
-	}
-
-	var tagsStructSlice []modules.Tag
-
-	for _, tm := range tagMap {
-		var ts = modules.Tag{
-			Name:   tm,
-			UseNum: 1,
-		}
-
-		for _, tag := range tags {
-			if tm == tag.Name {
-				ts = modules.Tag{
-					Model: gorm.Model{
-						ID: tag.ID,
-					},
-					Name:   tag.Name,
-					UseNum: tag.UseNum + 1,
-				}
-			}
-		}
-		tagsStructSlice = append(tagsStructSlice, ts)
-	}
-
-	for _, tag := range tagsStructSlice {
-		var err error
-		if tag.ID == 0 {
-			err = driver.DB.Create(&tag).Error
-			if err != nil {
-				panic(err)
-			}
-		} else {
-			err = driver.DB.Model(modules.Tag{}).Updates(tag).Error
-		}
-
+	theArticleArchiveDate := archiveDateParse.Format("2020-01")
+	driver.DB.Where("archive_date = ?", theArticleArchiveDate).First(&archive)
+	if archive.ID == 0 {
+		// 创建
+		archive.ArchiveDate = archiveDateParse.Format("2020-01")
+		archive.ArticleIds = fmt.Sprintf("%d", article.ID)
+		err := driver.DB.Create(&archive).Error
 		if err != nil {
-			return false
+			log.Println(err)
 		}
+		return
 	}
-	return true
+
+
 }
