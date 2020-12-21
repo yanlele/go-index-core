@@ -7,6 +7,7 @@ import (
 	"le-blog/services"
 	"le-blog/utils"
 	"net/http"
+	"strconv"
 )
 
 type postArticle struct {
@@ -118,4 +119,13 @@ func SaveArticle(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.SuccessResponse())
 	return
+}
+
+// detail 文章详情
+func Detail(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var article modules.Article
+	article.ID = uint(id)
+
+	err := driver.DB.First(&article).Error
 }
