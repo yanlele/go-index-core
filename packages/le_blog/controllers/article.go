@@ -128,4 +128,25 @@ func Detail(c *gin.Context) {
 	article.ID = uint(id)
 
 	err := driver.DB.First(&article).Error
+	if err != nil {
+		panic(err)
+	}
+
+	// article 的流量 + 1
+	article.ViewNum = article.ViewNum + 1
+	driver.DB.Save(&article)
+
+	auth := Auth{}.GetAuth(c)
+	header := Header{Title: article.Title}
+	data := &struct {
+		Article modules.Article
+		Auth
+		Header
+	}{
+		article,
+		auth,
+		header,
+	}
+	c.HTML(http.StatusOK, "detail", data)
 }
+
