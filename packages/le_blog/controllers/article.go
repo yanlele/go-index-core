@@ -150,3 +150,22 @@ func Detail(c *gin.Context) {
 	c.HTML(http.StatusOK, "detail", data)
 }
 
+// EditArticle 编辑文章
+func EditArticle(c *gin.Context) {
+	id, _ := c.Params.Get("id")
+	auth := (&Auth{}).GetAuth(c)
+	var article modules.Article
+
+	err := driver.DB.Where("id = ?", id).First(&article).Error
+
+	if err != nil {
+		panic(err)
+	}
+
+	data := struct {
+		modules.Article
+		Auth
+	}{article, auth}
+
+	c.HTML(http.StatusOK, "edit-article", data)
+}
