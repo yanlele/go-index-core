@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"le-blog/bootstrap/driver"
 	"le-blog/modules"
 	"le-blog/services"
@@ -168,4 +169,38 @@ func EditArticle(c *gin.Context) {
 	}{article, auth}
 
 	c.HTML(http.StatusOK, "edit-article", data)
+}
+
+// DelArticle 删除文章
+func DelArticle(c *gin.Context) {
+	id := c.Param("id")
+	auth := Auth{}.GetAuth(c)
+
+	article := modules.Article{
+		Model:        gorm.Model{},
+		Title:        "",
+		Introduction: "",
+		ContentMd:    "",
+		ContentHtml:  "",
+		UserID:       0,
+		User:         modules.User{},
+		Tags:         "",
+		ViewNum:      0,
+	}
+
+	err := driver.DB.Where("id = ？and user_id = ?", id, auth.Id).Find(&article).Error
+	if err != nil {
+		utils.RedirectBack(c)
+	}
+
+	if article.ID == 0 {
+		utils.RedirectBack(c)
+	}
+
+	err = driver.DB.Delete(&article).Error
+	if err != nil {
+		// session 写入 error
+	}
+
+	utils.RedirectBack(c)
 }
