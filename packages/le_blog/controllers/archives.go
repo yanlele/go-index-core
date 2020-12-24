@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"le-blog/bootstrap/driver"
 	"le-blog/modules"
 	"log"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -33,4 +35,20 @@ func Archives(c *gin.Context) {
 			Archives[archive.ArchiveDate] = Items
 		}
 	}
+
+	for _, archive := range Archives {
+		for _, item := range archive {
+			fmt.Printf("%#v", item)
+		}
+	}
+
+	header := Header{"文件归档"}
+
+	data := struct {
+		Auth
+		Archives map[string]articleItems
+		Header   Header
+	}{auth, Archives, header}
+
+	c.HTML(http.StatusOK, "archives", data)
 }
