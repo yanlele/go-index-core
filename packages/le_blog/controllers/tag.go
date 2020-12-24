@@ -54,3 +54,21 @@ func GetArticleByTagName(c *gin.Context) {
 	}{*paginate, auth, header}
 	c.HTML(http.StatusOK, "index", data)
 }
+
+// GetTags 获取tags列表
+func AjaxTags(c *gin.Context) {
+	var tags []modules.Tag
+
+	err := driver.DB.Select("id, name").Find(&tags).Error
+	if err != nil {
+		response := utils.Response{
+			Status: 0,
+			Data:   tags,
+			Msg:    err.Error(),
+		}
+		c.JSON(http.StatusOK, response.FailResponse())
+		return
+	}
+	c.JSON(http.StatusOK, tags)
+	return
+}
