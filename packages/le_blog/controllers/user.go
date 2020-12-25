@@ -147,8 +147,41 @@ func DoLogin(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, (&utils.Response{
 			Status: 403,
-			Msg: "邮箱或者密码错误",
+			Data:   nil,
+			Msg:    "邮箱或者密码错误",
 		}).FailResponse())
 		return
 	}
+
+	// 查看是否匹配
+	ok := utils.VerifyUserPassword(&user, logData.Password)
+	if !ok {
+		c.JSON(http.StatusOK, (&utils.Response{
+			Status: 403,
+			Data:   nil,
+			Msg:    "邮箱或者密码错误",
+		}).FailResponse())
+		return
+	}
+
+	auth := &Auth{
+		Id:         int(user.ID),
+		Name:       user.Name,
+		Avatar:     user.Avatar,
+		Profession: user.Profession,
+	}
+
+	session := sessions.Default(c)
+	session.Set("auth", auth)
+	err = session.Save()
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, (&utils.Response{
+		Status: 0,
+		Data:   nil,
+		Msg:    "",
+	}).SuccessResponse())
+	return
 }

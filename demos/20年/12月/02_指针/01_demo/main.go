@@ -30,7 +30,6 @@ func main() {
 	user.get()
 
 	User{
-		"yanle",
-		29,
+		age: 29,
 	}.getUser()
 }
