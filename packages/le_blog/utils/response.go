@@ -34,7 +34,7 @@ func Redirect(c *gin.Context, location string) {
 }
 
 // RedirectBack 重定向到上一次的页面
-func RedirectBack(c *gin.Context)  {
+func RedirectBack(c *gin.Context) {
 	referer := c.GetHeader("Referer")
 	pathInfo := ""
 	if referer == "" {
@@ -47,4 +47,3 @@ func RedirectBack(c *gin.Context)  {
 	c.Redirect(http.StatusFound, pathInfo)
 	return
 }
-

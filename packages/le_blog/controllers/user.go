@@ -124,3 +124,23 @@ func Login(c *gin.Context) {
 	}{auth}
 	c.HTML(http.StatusOK, "login", data)
 }
+
+func DoLogin(c *gin.Context) {
+	var logData struct {
+		Email    string `form:"email" json:"email" binding:"required"`
+		Password string `form:"password" json:"password" binding:"required"`
+	}
+
+	// 验证数据
+	if err := c.ShouldBind(&logData); err != nil {
+		res := utils.Response{
+			Status: 403,
+			Data:   nil,
+			Msg:    err.Error(),
+		}
+		c.JSON(http.StatusOK, res.FailResponse())
+		return
+	}
+
+	//
+}
