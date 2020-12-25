@@ -32,6 +32,7 @@ func Register(c *gin.Context) {
 	c.HTML(http.StatusOK, "join", data)
 }
 
+// 注册用户
 func DoRegister(c *gin.Context) {
 	var regData formUser
 	if err := c.ShouldBind(&regData); err != nil {
@@ -109,4 +110,17 @@ func DoRegister(c *gin.Context) {
 		Data: regData,
 	}
 	c.JSON(http.StatusOK, res.SuccessResponse())
+}
+
+// get sign in
+func Login(c *gin.Context) {
+	auth := Auth{}.GetAuth(c)
+	if auth.Id != 0 {
+		utils.Redirect(c, "/")
+	}
+
+	data := struct {
+		Auth
+	}{auth}
+	c.HTML(http.StatusOK, "login", data)
 }
