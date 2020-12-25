@@ -135,12 +135,20 @@ func DoLogin(c *gin.Context) {
 	if err := c.ShouldBind(&logData); err != nil {
 		res := utils.Response{
 			Status: 403,
-			Data:   nil,
 			Msg:    err.Error(),
 		}
 		c.JSON(http.StatusOK, res.FailResponse())
 		return
 	}
 
-	//
+	// 查找用户看密码是否匹配
+	user := modules.User{}
+	err := driver.DB.Where("email = ?", logData.Email).First(&user).Error
+	if err != nil {
+		c.JSON(http.StatusOK, (&utils.Response{
+			Status: 403,
+			Msg: "邮箱或者密码错误",
+		}).FailResponse())
+		return
+	}
 }
