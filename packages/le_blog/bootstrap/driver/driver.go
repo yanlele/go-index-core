@@ -66,7 +66,7 @@ func InitConn() {
 	}), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			//TablePrefix:   tablePrefix, // 所有 table 前缀
-			SingularTable: true, // 最后 table 不加s
+			//SingularTable: true, // 最后 table 不加s
 		},
 		Logger: newLogger,
 	})

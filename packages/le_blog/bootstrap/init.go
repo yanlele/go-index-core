@@ -1,10 +1,12 @@
 package bootstrap
 
 import (
+	"encoding/gob"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"html/template"
+	"le-blog/controllers"
 	"le-blog/middleware"
 	"le-blog/routers"
 	"le-blog/utils"
@@ -17,7 +19,7 @@ func Init() *gin.Engine {
 	app := gin.Default()
 
 	// 完全不知道这个有啥用？
-	//gob.Register(controllers.Auth{})
+	gob.Register(controllers.Auth{})
 
 	// 添加cookie 和 session
 	store := cookie.NewStore([]byte("secret"))
