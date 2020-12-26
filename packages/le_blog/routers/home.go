@@ -27,5 +27,27 @@ func Home(r *gin.Engine) {
 			user.GET("/update_pwd", controllers.UpdatePwd)
 			user.POST("/update_pwd", controllers.DoUpdatePwd)
 		}
+
+		// 文章详情
+		home.GET("/detail/:id", controllers.Detail)
+
+		// 标签页面
+		tag := home.Group("/tags")
+		{
+			tag.GET("/", controllers.TagIndex)
+			tag.GET("/title/:name", controllers.GetArticleByTagName)
+			tag.GET("/ajax/list", controllers.AjaxTags)
+		}
+
+		home.GET("/archives", controllers.Archives)
+
+		// 注册
+		home.GET("/join", controllers.Register)
+		home.POST("/join", controllers.DoRegister)
+
+		// sign in
+		home.GET("/login", controllers.Login)
+		home.POST("/login", controllers.DoLogin)
+		home.GET("/logout", controllers.Logout)
 	}
 }
