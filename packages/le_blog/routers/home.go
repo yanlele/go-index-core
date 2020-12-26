@@ -20,5 +20,11 @@ func Home(r *gin.Engine) {
 			article.GET("/edit/:id", controllers.EditArticle)
 			article.GET("/delete/:id", controllers.DelArticle)
 		}
+
+		// 个人中心
+		//user := home.Group("/user", middleware.Authorization)
+		//{
+		//	user.GET("/update_pwd", controllers)
+		//}
 	}
 }

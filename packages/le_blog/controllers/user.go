@@ -185,3 +185,18 @@ func DoLogin(c *gin.Context) {
 	}).SuccessResponse())
 	return
 }
+
+// method : GET
+// 更新密码
+func Logout(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	err := session.Save()
+	if err != nil {
+		panic(err)
+	}
+	c.Redirect(http.StatusFound, "/")
+	return
+}
+
+
