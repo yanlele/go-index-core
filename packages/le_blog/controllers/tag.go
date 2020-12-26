@@ -72,3 +72,38 @@ func AjaxTags(c *gin.Context) {
 	c.JSON(http.StatusOK, tags)
 	return
 }
+
+func AddTags(c *gin.Context) {
+	var tag modules.Tag
+	err := c.ShouldBind(&tag)
+	if tag.Name == "" {
+		res := utils.Response{
+			Status: 401,
+			Msg:    "标签名字一定要有",
+		}
+		c.JSON(http.StatusOK, res.FailResponse())
+		return
+	}
+
+	// 绑定数据成功
+	if err != nil {
+		res := utils.Response{
+			Status: 401,
+			Msg:    err.Error(),
+		}
+		c.JSON(http.StatusOK, res.FailResponse())
+		return
+	}
+
+	dbResult := driver.DB.Create(&tag)
+	if dbResult.Error != nil {
+		c.JSON(http.StatusOK, (&utils.Response{
+			Msg: dbResult.Error.Error(),
+		}).FailResponse())
+		return
+	}
+
+	c.JSON(http.StatusOK, (&utils.Response{
+		Msg: "保存成功",
+	}).SuccessResponse())
+}

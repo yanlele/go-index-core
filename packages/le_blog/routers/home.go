@@ -37,6 +37,7 @@ func Home(r *gin.Engine) {
 			tag.GET("/", controllers.TagIndex)
 			tag.GET("/title/:name", controllers.GetArticleByTagName)
 			tag.GET("/ajax/list", controllers.AjaxTags)
+			tag.POST("/add", controllers.AddTags)
 		}
 
 		home.GET("/archives", controllers.Archives)
