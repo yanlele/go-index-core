@@ -7,6 +7,7 @@ import (
 	"le-blog/bootstrap/driver"
 	"le-blog/modules"
 	"le-blog/utils"
+	"log"
 	"net/http"
 )
 
@@ -199,4 +200,46 @@ func Logout(c *gin.Context) {
 	return
 }
 
+// 修改密码 POST
+func DoUpdatePwd(c *gin.Context) {
+	auth := Auth{}.GetAuth(c)
+	password := c.PostForm("password")
+	re_password := c.PostForm("re_password")
 
+	if password != re_password {
+		res := utils.Response{
+			Status: 403,
+			Data:   nil,
+			Msg:    "密码不一致",
+		}
+		c.JSON(http.StatusOK, res.FailResponse())
+		return
+	}
+
+	salt := utils.Salt()
+	user, err := modules.GetUserById(auth.Id)
+	if err != nil {
+		log.Println(err)
+	}
+
+	user.Salt = salt
+	user.Password = utils.CryptUserPassword(password, salt)
+
+	err = user.Update()
+	if err != nil {
+		res := utils.Response{
+			Status: 400,
+			Data:   nil,
+			Msg:    err.Error(),
+		}
+		c.JSON(http.StatusOK, res.FailResponse())
+		return
+	}
+
+	res := utils.Response{
+		Status: 0,
+		Data:   nil,
+		Msg:    "操作成功",
+	}
+	c.JSON(http.StatusOK, res.SuccessResponse())
+}
