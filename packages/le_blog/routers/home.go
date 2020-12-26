@@ -22,9 +22,10 @@ func Home(r *gin.Engine) {
 		}
 
 		// 个人中心
-		//user := home.Group("/user", middleware.Authorization)
-		//{
-		//	user.GET("/update_pwd", controllers)
-		//}
+		user := home.Group("/user", middleware.Authorization)
+		{
+			user.GET("/update_pwd", controllers.UpdatePwd)
+			user.POST("/update_pwd", controllers.DoUpdatePwd)
+		}
 	}
 }

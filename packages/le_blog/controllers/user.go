@@ -200,6 +200,16 @@ func Logout(c *gin.Context) {
 	return
 }
 
+// 更新密码页面
+func UpdatePwd(c *gin.Context) {
+	auth := Auth{}.GetAuth(c)
+	data := struct {
+		Auth
+		Title string
+	}{auth, "修改密码"}
+	c.HTML(http.StatusOK, "update_pwd", data)
+}
+
 // 修改密码 POST
 func DoUpdatePwd(c *gin.Context) {
 	auth := Auth{}.GetAuth(c)
