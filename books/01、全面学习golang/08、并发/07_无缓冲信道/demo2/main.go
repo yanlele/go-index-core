@@ -29,5 +29,9 @@ func handleRunner(baton chan int) {
 }
 
 func main() {
-
+	baton := make(chan int)
+	wg.Add(1)
+	go handleRunner(baton)
+	baton <- 1
+	wg.Wait()
 }
