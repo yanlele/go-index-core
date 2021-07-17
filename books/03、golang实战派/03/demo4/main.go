@@ -22,7 +22,7 @@ func webHandler(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", indexHandler)
+	mux.HandleFunc("/index", indexHandler)
 	mux.HandleFunc("/hi", hiHandler)
 	mux.HandleFunc("/web", webHandler)
 
