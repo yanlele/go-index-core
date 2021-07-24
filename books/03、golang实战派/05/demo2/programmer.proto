@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package proto;
+option go_package = ".";
+
+// service 定义开放调用服务
+service ProgrammerService {
+    // rpc 定义服务内远程调用
+    rpc GetProgrammerInfo (Request) returns (Response) {
+
+    }
+}
+
+message Request {
+    string name = 1;
+}
+
+message Response {
+    int32 uid = 1;
+    string username = 2;
+    string job = 3;
+    repeated string goodAt = 4;
+}
